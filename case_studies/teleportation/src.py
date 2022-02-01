@@ -1,11 +1,4 @@
-import matplotlib.pyplot as plt
-from IPython.display import display
-
-from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, Aer, transpile
-from qiskit.extensions import Initialize
-from qiskit.quantum_info import random_statevector, Statevector
-from qiskit.visualization import array_to_latex, plot_bloch_multivector
-
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 """
 code from https://qiskit.org/textbook/ch-algorithms/teleportation.html
 """
@@ -30,19 +23,3 @@ def quantum_teleportation() -> QuantumCircuit:
     circuit.z(2).c_if(crz, 1)
 
     return circuit
-
-
-if __name__ == "__main__":
-    psi = random_statevector(2)
-
-    q_tele = quantum_teleportation(psi)
-    q_tele.draw(output='mpl')
-
-    backend = Aer.get_backend('aer_simulator')
-    q_tele.save_statevector()
-
-    result = backend.run(q_tele).result().get_statevector()
-
-    plot_bloch_multivector(psi)
-    plot_bloch_multivector(result)
-    plt.show()

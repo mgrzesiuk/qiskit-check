@@ -1,10 +1,7 @@
 import math
 
-import matplotlib.pyplot as plt
-
-from qiskit import QuantumCircuit, transpile, Aer
+from qiskit import QuantumCircuit
 from qiskit.circuit.library import QFT
-from qiskit.visualization import plot_histogram
 
 """
 code from https://qiskit.org/textbook/ch-algorithms/quantum-phase-estimation.html
@@ -31,17 +28,3 @@ def phase_estimation(circuit: QuantumCircuit) -> QuantumCircuit:
         circuit.measure(qubit_index, qubit_index)
 
     return circuit
-
-
-if __name__ == "__main__":
-    qubit_number = 4
-    qpe = phase_estimation(QuantumCircuit(qubit_number, qubit_number-1))
-    qpe.draw(output='mpl')
-    backend = Aer.get_backend('aer_simulator')
-    qpe = transpile(qpe, backend)
-
-    result = backend.run(qpe).result()
-
-    plot_histogram(result.get_counts(), title='Bell-State counts')
-    plt.show()
-

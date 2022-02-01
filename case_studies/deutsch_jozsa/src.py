@@ -1,8 +1,5 @@
-import matplotlib.pyplot as plt
-
-from qiskit import QuantumCircuit, Aer, transpile
+from qiskit import QuantumCircuit
 from qiskit.circuit import Gate
-from qiskit.visualization import plot_histogram
 
 """
 algorithm from https://qiskit.org/textbook/ch-algorithms/deutsch-jozsa.html
@@ -43,14 +40,3 @@ def deutsch_jozsa(circuit: QuantumCircuit, oracle: int) -> QuantumCircuit:
         circuit.measure(qubit_index, qubit_index)
 
     return circuit
-
-
-if __name__ == "__main__":
-    test_circuit = deutsch_jozsa(QuantumCircuit(4, 3), 1)
-    backend = Aer.get_backend('aer_simulator')
-    grover_circuit = transpile(test_circuit, backend)
-
-    result = backend.run(grover_circuit).result()
-
-    plot_histogram(result.get_counts(), title='Bell-State counts')
-    plt.show()

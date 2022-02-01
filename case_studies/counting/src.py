@@ -1,11 +1,6 @@
-from math import pi, sin
-
-import matplotlib.pyplot as plt
-
-from qiskit import QuantumCircuit, Aer, transpile
+from qiskit import QuantumCircuit
 from qiskit.algorithms import AmplificationProblem, Grover
 from qiskit.circuit import Gate
-from qiskit.visualization import plot_histogram
 
 from case_studies.fourier_transform.src import inverse_qft
 
@@ -49,27 +44,3 @@ def counting(num_counting_qubits: int, num_searching_qubits: int) -> QuantumCirc
     circuit.measure(range(num_counting_qubits), range(num_counting_qubits))
 
     return circuit
-
-
-if __name__ == "__main__":
-    counting_circuit = counting(4, 4)
-    counting_circuit.draw(output='mpl')
-    backend = Aer.get_backend('aer_simulator')
-    counting_circuit = transpile(counting_circuit, backend)
-
-    result = backend.run(counting_circuit).result()
-    hist = result.get_counts()
-    plot_histogram(hist, title='Bell-State counts', figsize=(8, 7))
-    plt.show()
-
-    measured_str = max(hist, key=hist.get)
-    measured_int = int(measured_str, 2)
-    print("Register Output = %i" % measured_int)
-
-    theta = (measured_int/(2**4))*pi*2
-    print("Theta = %.5f" % theta)
-
-
-    N = 2**4
-    M = N * (sin(theta/2)**2)
-    print("No. of Solutions = %.1f" % (N-M))

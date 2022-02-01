@@ -1,7 +1,4 @@
-import matplotlib.pyplot as plt
-
-from qiskit import QuantumCircuit, Aer, transpile
-from qiskit.visualization import plot_histogram
+from qiskit import QuantumCircuit
 
 """
 code from https://qiskit.org/textbook/ch-algorithms/superdense-coding.html
@@ -52,17 +49,3 @@ def superdense_coding(message: str) -> QuantumCircuit:
     circuit = encode_message(circuit, 1, message)
 
     return decode_message(circuit)
-
-
-if __name__ == "__main__":
-    qc = superdense_coding("00")
-    qc.measure_all()
-    qc.draw(output='mpl')
-    backend = Aer.get_backend('aer_simulator')
-    qc = transpile(qc, backend)
-
-    result = backend.run(qc).result()
-
-    plot_histogram(result.get_counts(), title='Bell-State counts')
-    plt.show()
-
