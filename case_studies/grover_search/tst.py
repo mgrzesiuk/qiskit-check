@@ -4,9 +4,9 @@ from qiskit import QuantumCircuit
 
 from case_studies.example_test_base import ExampleTestBase
 from case_studies.grover_search.src import grover_search, oracle
-from qiskit_property_testing.property_test.assertions.assertion import AbstractAssertion, AssertMostProbable
-from qiskit_property_testing.property_test.resources.test_resource import Qubit, Bit
-from qiskit_property_testing.property_test.resources.qubit_range import AngleRange
+from qiskit_check.property_test.assertion import AbstractAssertion, AssertMostProbable
+from qiskit_check.property_test.resources.test_resource import Qubit, Bit
+from qiskit_check.property_test.resources.qubit_range import AngleRange
 
 
 class GroverSearchPropertyTest(ExampleTestBase):

@@ -4,9 +4,9 @@ from qiskit import QuantumCircuit
 
 from case_studies.example_test_base import ExampleTestBase
 from case_studies.superdense_coding.src import superdense_coding
-from qiskit_property_testing.property_test.assertions.assertion import AbstractAssertion, AssertMeasurement
-from qiskit_property_testing.property_test.resources.test_resource import Qubit, Bit
-from qiskit_property_testing.property_test.resources.qubit_range import AnyRange
+from qiskit_check.property_test.assertion import AbstractAssertion, AssertMeasurementEqual
+from qiskit_check.property_test.resources.test_resource import Qubit, Bit
+from qiskit_check.property_test.resources.qubit_range import AnyRange
 
 
 class SuperdenseCodingPropertyTest(ExampleTestBase):
@@ -29,4 +29,4 @@ class SuperdenseCodingPropertyTest(ExampleTestBase):
 
     @property
     def assertions(self) -> AbstractAssertion:
-        return AssertMeasurement(self.bitstring)
+        return AssertMeasurementEqual(self.bitstring)
