@@ -1,4 +1,4 @@
-from cmath import polar, cos, exp, sin
+from cmath import polar, cos, exp, sin, phase
 from math import acos
 from typing import Tuple
 
@@ -11,7 +11,7 @@ def vector_state_to_hopf_coordinates(
     :return:
     """
     ground_state_abs, ground_state_phase = polar(ground_state_amplitude)
-    _, excited_state_phase = polar(excited_state_amplitude)
+    excited_state_phase = phase(excited_state_amplitude)
 
     theta = 2 * acos(ground_state_abs)
     relative_phase = excited_state_phase - ground_state_phase

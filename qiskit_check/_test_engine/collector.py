@@ -4,5 +4,6 @@ from qiskit_check.property_test.property_test import PropertyTest
 
 
 class Collector:
-    def collect(self) -> List[Type[PropertyTest]]:
+    @staticmethod
+    def collect(directory: str) -> List[Type[PropertyTest]]:
         pass

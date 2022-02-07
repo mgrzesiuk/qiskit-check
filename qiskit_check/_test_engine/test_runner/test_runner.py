@@ -1,35 +1,27 @@
-from typing import Sequence
 from abc import ABC, abstractmethod
 
 from qiskit import Aer, transpile
 from qiskit.result import Result
 
 from qiskit_check._test_engine.concerete_property_test import ConcretePropertyTest, TestCase
+from qiskit_check._test_engine.printer import AbstractPrinter
 from qiskit_check._test_engine.test_runner.abstract_test_runner import AbstractTestRunner
 
 
-# TODO: add result printing
-
-
 class TestRunner(AbstractTestRunner, ABC):
-    def _force_run_tests(self, property_tests: Sequence[ConcretePropertyTest]) -> None:
-        for property_test in property_tests:
-            try:
-                self._run_test(property_test)
-            except AssertionError as assertion_error:
-                pass  # TODO: add printing results - maybe we can just give message that tests proceede since force flag is set
-
-    def _run_tests(self, property_tests: Sequence[ConcretePropertyTest]) -> None:
-        for property_test in property_tests:
-            self._run_test(property_test)
-
-    def _run_test(self, property_test: ConcretePropertyTest) -> None:
+    def _run_test(self, property_test: ConcretePropertyTest, printer: AbstractPrinter) -> None:
         for test_case in property_test:
+            printer.print_test_case_header(test_case)
             experiment_results = []
             for _ in range(test_case.num_experiments):
                 results = self._run_test_case(test_case)
                 experiment_results.append(results.get_counts())
-            test_case.assessor.assess(experiment_results)
+            try:
+                test_case.assessor.assess(experiment_results)
+                printer.print_test_case_success(test_case)
+            except Exception as error:
+                printer.print_test_case_failure(test_case, error)
+                raise Exception(error)
             # TODO: rerunning tests that failed? save failed test cases to file and rerun them with new batch
 
     @abstractmethod
