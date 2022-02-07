@@ -6,7 +6,7 @@ from case_studies.example_test_base import ExampleTestBase
 from case_studies.teleportation.src import quantum_teleportation
 from qiskit_check.property_test.assertion import AbstractAssertion, AssertTeleported
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
-from qiskit_check.property_test.resources.qubit_range import AngleRange, AnyRange
+from qiskit_check.property_test.resources.qubit_range import QubitRange, AnyRange
 
 
 class TeleportationProperty(ExampleTestBase):
@@ -16,7 +16,7 @@ class TeleportationProperty(ExampleTestBase):
 
     @property
     def qubits(self) -> Collection[Qubit]:
-        return [Qubit(AnyRange()), Qubit(AngleRange(0, 0, 0, 0)), Qubit(AngleRange(0, 0, 0, 0))]
+        return [Qubit(AnyRange()), Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 
     @property
     def bits(self) -> Collection[Bit]:

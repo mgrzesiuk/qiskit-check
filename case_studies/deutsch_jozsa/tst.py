@@ -7,7 +7,7 @@ from case_studies.deutsch_jozsa.src import deutsch_jozsa
 from case_studies.example_test_base import ExampleTestBase
 from qiskit_check.property_test.assertion import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
-from qiskit_check.property_test.resources.qubit_range import AngleRange
+from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
 class DeutschJozsaPropertyTest(ExampleTestBase):
@@ -20,7 +20,7 @@ class DeutschJozsaPropertyTest(ExampleTestBase):
 
     @property
     def qubits(self) -> Collection[Qubit]:
-        return [Qubit(AngleRange(0, 0, 0, 0)) for _ in range(4)]
+        return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(4)]
 
     @property
     def bits(self) -> Collection[Bit]:

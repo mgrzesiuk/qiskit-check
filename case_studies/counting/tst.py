@@ -7,7 +7,7 @@ from case_studies.counting.src import counting
 from case_studies.example_test_base import ExampleTestBase
 from qiskit_check.property_test.assertion import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
-from qiskit_check.property_test.resources.qubit_range import AngleRange
+from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
 class CountingPropertyTest(ExampleTestBase):
@@ -22,7 +22,7 @@ class CountingPropertyTest(ExampleTestBase):
 
     @property
     def qubits(self) -> Collection[Qubit]:
-        return [Qubit(AngleRange(0, 0, 0, 0)) for _ in range(self.num_qubits)]
+        return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(self.num_qubits)]
 
     @property
     def bits(self) -> Collection[Bit]:

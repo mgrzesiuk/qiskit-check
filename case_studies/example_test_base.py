@@ -1,6 +1,6 @@
 from abc import ABC
 
-from qiskit_property_testing.property_test.property_test import PropertyTest
+from qiskit_check.property_test.property_test import PropertyTest
 
 
 class ExampleTestBase(PropertyTest, ABC):
