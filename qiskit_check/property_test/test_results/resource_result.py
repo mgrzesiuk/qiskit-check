@@ -1,24 +1,17 @@
-from typing import List
+from qiskit.result import Result
 
 
-class QubitResult:
-    pass
-
-
-class TomographyResult(QubitResult):
-    pass
+class TomographyResult:
+    @staticmethod
+    def from_qiskit_result(result: Result):
+        pass
 
 
 class MeasurementResult:
-    def __init__(self, measurements: List[str]):
-        self.counts = {"0": 0, "1": 0}
-        for measurement in measurements:
-            self.counts[measurement] += 1
+    def __init__(self):
+        pass
 
+    @staticmethod
+    def from_qiskit_result(result: Result):
+        pass
 
-class MeasurementQubitResult(QubitResult, MeasurementResult):
-    pass
-
-
-class BitResult(MeasurementResult):
-    pass

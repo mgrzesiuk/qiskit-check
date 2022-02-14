@@ -20,7 +20,7 @@ class TestCase:
         self.num_experiments = num_experiments
 
 
-class TestCaseGenerator:  # TODO: maybe a factory for this as well? but what for, this doesnt seem like configurable object, it would just move object creation to another object and there is no benefit of it (this isnt used elsewhere either way)
+class TestCaseGenerator:
     def __init__(
             self, property_test_class: Type[PropertyTest], assessor_factory: AssessorFactory,
             qubit_input_generator: QubitInputGenerator) -> None:
@@ -35,25 +35,27 @@ class TestCaseGenerator:  # TODO: maybe a factory for this as well? but what for
         concrete_property_test = self.property_test_class()
 
         resource_matcher = self._get_resource_matcher(concrete_property_test)
+
         assessor = self.assessor_factory.build(concrete_property_test, resource_matcher)
 
-        test_circuit = self._augment_circuit(concrete_property_test.circuit, resource_matcher)
+        test_circuit = self._initialize_circuit(concrete_property_test.circuit, resource_matcher)
+        test_circuit = self._measure_circuit(test_circuit, assessor)
 
-        return TestCase(
-            test_circuit, assessor, concrete_property_test.num_measurements(),
-            concrete_property_test.num_experiments())
+        return TestCase(test_circuit, assessor, concrete_property_test.num_measurements(),
+                        concrete_property_test.num_experiments())
 
     @staticmethod
-    def _augment_circuit(circuit: QuantumCircuit, resource_matcher: Dict[Qubit, ConcreteQubit]) -> QuantumCircuit:
+    def _initialize_circuit(circuit: QuantumCircuit, resource_matcher: Dict[Qubit, ConcreteQubit]) -> QuantumCircuit:
         test_circuit = QuantumCircuit(len(circuit.qubits), len(circuit.clbits))
 
         for qubit_template, concrete_qubit in resource_matcher.items():
             test_circuit.initialize(concrete_qubit.get_initial_value(), concrete_qubit.get_qubit())
 
-        test_circuit += circuit
+        return test_circuit + circuit
 
-        test_circuit.measure_all()
-        return test_circuit
+    @staticmethod
+    def _measure_circuit(circuit: QuantumCircuit, assessor: Assessor) -> QuantumCircuit:
+        return circuit + assessor.get_measurement_circuit(len(circuit.qubits), len(circuit.clbits))
 
     def _get_resource_matcher(self, concrete_property_test: PropertyTest) -> Dict[Qubit, ConcreteQubit]:
         specified_qubits = concrete_property_test.qubits
