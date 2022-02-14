@@ -4,7 +4,7 @@ from qiskit import QuantumCircuit
 
 from case_studies.example_test_base import ExampleTestBase
 from case_studies.phase_estimation.src import phase_estimation
-from qiskit_check.property_test.assertions.assertion import AbstractAssertion, AssertMeasurementEqual
+from qiskit_check.property_test.assertions import AbstractAssertion, AssertMeasurementEqual
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 

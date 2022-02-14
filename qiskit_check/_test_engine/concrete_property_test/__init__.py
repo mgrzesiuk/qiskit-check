@@ -1,0 +1,1 @@
+from concerete_property_test import ConcretePropertyTest

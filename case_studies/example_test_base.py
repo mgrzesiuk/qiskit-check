@@ -1,4 +1,5 @@
-from abc import ABC
+from abc import ABC#TODO: do 2 of these, one for one by one, other for multithreaded (so just a list at once) (maybe it shouldnt be here and runner should do it - and then it can be one by one genereation)
+
 
 from qiskit_check.property_test.property_test import PropertyTest
 

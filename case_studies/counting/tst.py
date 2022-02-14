@@ -5,7 +5,7 @@ from qiskit import QuantumCircuit
 
 from case_studies.counting.src import counting
 from case_studies.example_test_base import ExampleTestBase
-from qiskit_check.property_test.assertions.assertion import AbstractAssertion, AssertTrue
+from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit, ConcreteQubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 

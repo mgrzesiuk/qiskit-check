@@ -4,7 +4,7 @@ from typing import Union, Sequence
 from qiskit import QuantumCircuit
 
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
-from qiskit_check.property_test.assertions.assertion import AbstractAssertion
+from qiskit_check.property_test.assertions import AbstractAssertion
 
 
 class PropertyTest(ABC):

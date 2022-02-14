@@ -36,7 +36,3 @@ class DegreeRange(QubitRange):
 class AnyRange(QubitRange):
     def __init__(self) -> None:
         super().__init__(0, 0, 2*pi, 2*pi)
-
-
-class AmplitudeRange(QubitRange):
-    pass  # TODO: do I want to support this? seems messy given no comparisons between complex values

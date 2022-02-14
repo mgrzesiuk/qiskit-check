@@ -1,4 +1,4 @@
-from traceback import print_stack
+from traceback import format_exception
 
 from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest
 from qiskit_check._test_engine.concrete_property_test.test_case import TestCase
@@ -19,14 +19,14 @@ class TerminalPrinter(AbstractPrinter):
 
     def print_test_case_failure(self, test_case: TestCase, error: Exception) -> None:
         print("test case FAILED with error:", error)
-        print_stack(error)
+        print(''.join(format_exception(None, error, error.__traceback__)))
 
     def print_property_test_success(self, property_test: ConcretePropertyTest) -> None:
         print("entire property test PASSED")
 
     def print_property_test_failure(self, property_test: ConcretePropertyTest, error: Exception) -> None:
         print("entire property test FAILED", error)
-        print_stack(error)
+        print(''.join(format_exception(None, error, error.__traceback__)))
 
     def print_summary(self, num_tests_failed: int, num_tests_succeeded: int) -> None:
         print("all tests finished")
