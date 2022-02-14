@@ -10,10 +10,10 @@ from qiskit_check.property_test.utils import vector_state_to_hopf_coordinates, h
 
 
 class AssertTransformed(AbstractAssertion):
-    def __init__(self, qubit: Qubit, phase_shift: float, angle_shift: float) -> None:  # TODO: is this naming even worth keeping, maybe just theta and phi will be more intuitive
+    def __init__(self, qubit: Qubit, theta_shift: float, phi_shift: float) -> None:  # TODO: is this naming even worth keeping, maybe just theta and phi will be more intuitive
         self.qubit = qubit
-        self.phase_shift = phase_shift
-        self.angle_shift = angle_shift
+        self.theta_shift = theta_shift
+        self.phi_shift = phi_shift
 
     def verify(self, experiments: List[TestResult], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         if self.qubit not in resource_matcher:
@@ -24,8 +24,8 @@ class AssertTransformed(AbstractAssertion):
 
         qubit_initial_value = resource_matcher[self.qubit].value.to_dict()
         theta, phi = vector_state_to_hopf_coordinates(qubit_initial_value["0"], qubit_initial_value["1"])
-        new_theta = theta + self.angle_shift
-        new_phase = phi + self.phase_shift
+        new_theta = theta + self.theta_shift
+        new_phase = phi + self.phi_shift
 
         new_expected_state = Statevector([*hopf_coordinates_to_vector_state(new_theta, new_phase)])
 

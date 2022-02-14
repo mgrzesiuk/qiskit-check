@@ -15,8 +15,8 @@ class UniformInputGenerator(QubitInputGenerator):
 
     @staticmethod
     def _generate_single_value(qubit: Qubit) -> Statevector:
-        angle = uniform(qubit.values.angle_start, qubit.values.angle_end)
-        relative_phase = uniform(qubit.values.relative_phase_start, qubit.values.relative_phase_end)
+        angle = uniform(qubit.values.theta_start, qubit.values.theta_end)
+        relative_phase = uniform(qubit.values.phi_start, qubit.values.phi_end)
         ground_state_amp, excited_state_amp = hopf_coordinates_to_vector_state(angle, relative_phase)
         return Statevector([ground_state_amp, excited_state_amp])
 

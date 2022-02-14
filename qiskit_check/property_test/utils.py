@@ -19,7 +19,7 @@ def vector_state_to_hopf_coordinates(
     return theta, relative_phase
 
 
-def hopf_coordinates_to_vector_state(angle: float, relative_phase: float) -> Tuple[complex, complex]:
-    ground_state_amp = cos(angle/2)
-    excited_state_amp = exp(relative_phase*1j) * sin(angle/2)
+def hopf_coordinates_to_vector_state(theta: float, phi: float) -> Tuple[complex, complex]:
+    ground_state_amp = cos(theta/2)
+    excited_state_amp = exp(phi*1j) * sin(theta/2)
     return ground_state_amp, excited_state_amp
