@@ -4,33 +4,36 @@ from typing import Union, Sequence
 from qiskit import QuantumCircuit
 
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
-from qiskit_check.property_test.assertion import AbstractAssertion
+from qiskit_check.property_test.assertions.assertion import AbstractAssertion
 
 
 class PropertyTest(ABC):
+    def __init__(self) -> None:
+        self.bits = self.get_bits()
+        self.qubits = self.get_qubits()
+
     @property
     @abstractmethod
     def circuit(self) -> QuantumCircuit:
         pass
 
-    @property
     @abstractmethod
-    def qubits(self) -> Sequence[Qubit]:
+    def get_qubits(self) -> Sequence[Qubit]:
         pass
 
-    @property
     @abstractmethod
-    def bits(self) -> Sequence[Bit]:
+    def get_bits(self) -> Sequence[Bit]:
         pass
 
-    @property
     @abstractmethod
-    def assertions(self) -> Union[AbstractAssertion, Sequence[AbstractAssertion]]:
+    def assertions(
+            self, qubits: Sequence[Qubit],
+            bits: Sequence[Bit]) -> Union[AbstractAssertion, Sequence[AbstractAssertion]]:
         pass
 
-    @property
+    @staticmethod
     @abstractmethod
-    def confidence_level(self) -> float:
+    def confidence_level() -> float:
         pass
 
     @staticmethod
@@ -38,12 +41,12 @@ class PropertyTest(ABC):
     def num_test_cases() -> int:
         pass
 
-    @property
+    @staticmethod
     @abstractmethod
-    def num_measurements(self) -> int:
+    def num_measurements() -> int:
         pass
 
-    @property
+    @staticmethod
     @abstractmethod
-    def num_experiments(self) -> int:
+    def num_experiments() -> int:
         pass

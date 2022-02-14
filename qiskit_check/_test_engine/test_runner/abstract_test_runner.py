@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from qiskit_check._test_engine.concerete_property_test import ConcretePropertyTest
-from qiskit_check._test_engine.printer import AbstractPrinter
+from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest
+from qiskit_check._test_engine.printers.printer import AbstractPrinter
 
 
 class AbstractTestRunner(ABC):

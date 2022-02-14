@@ -1,7 +1,5 @@
-from sys import exit
-
-from qiskit_property_testing import main
+from qiskit_check import main
 
 
 if __name__ == "__main__":
-    exit(main())
+    main()

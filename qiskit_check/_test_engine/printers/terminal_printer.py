@@ -1,37 +1,8 @@
-from abc import ABC, abstractmethod
+from traceback import print_stack
 
-from qiskit_check._test_engine.concerete_property_test import ConcretePropertyTest
-from qiskit_check._test_engine.test_case import TestCase
-
-
-class AbstractPrinter(ABC):
-    @abstractmethod
-    def print_property_test_header(self, property_test: ConcretePropertyTest) -> None:
-        pass
-
-    @abstractmethod
-    def print_test_case_header(self, test_case: TestCase) -> None:
-        pass
-
-    @abstractmethod
-    def print_test_case_success(self, test_case: TestCase) -> None:
-        pass
-
-    @abstractmethod
-    def print_test_case_failure(self, test_case: TestCase, error: Exception) -> None:
-        pass
-
-    @abstractmethod
-    def print_property_test_success(self, property_test: ConcretePropertyTest) -> None:
-        pass
-
-    @abstractmethod
-    def print_property_test_failure(self, property_test: ConcretePropertyTest, error: Exception) -> None:
-        pass
-
-    @abstractmethod
-    def print_summary(self, num_tests_failed: int, num_tests_succeeded: int) -> None:
-        pass
+from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest
+from qiskit_check._test_engine.concrete_property_test.test_case import TestCase
+from qiskit_check._test_engine.printers.abstract_printer import AbstractPrinter
 
 
 class TerminalPrinter(AbstractPrinter):
@@ -48,12 +19,14 @@ class TerminalPrinter(AbstractPrinter):
 
     def print_test_case_failure(self, test_case: TestCase, error: Exception) -> None:
         print("test case FAILED with error:", error)
+        print_stack(error)
 
     def print_property_test_success(self, property_test: ConcretePropertyTest) -> None:
         print("entire property test PASSED")
 
     def print_property_test_failure(self, property_test: ConcretePropertyTest, error: Exception) -> None:
         print("entire property test FAILED", error)
+        print_stack(error)
 
     def print_summary(self, num_tests_failed: int, num_tests_succeeded: int) -> None:
         print("all tests finished")

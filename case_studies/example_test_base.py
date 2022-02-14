@@ -4,19 +4,19 @@ from qiskit_check.property_test.property_test import PropertyTest
 
 
 class ExampleTestBase(PropertyTest, ABC):
-    @property
-    def confidence_level(self) -> float:
+    @staticmethod
+    def confidence_level() -> float:
         return 0.99
 
-    @property
-    def num_test_cases(self) -> int:
-        return 1000
+    @staticmethod
+    def num_test_cases() -> int:
+        return 2
 
-    @property
-    def num_measurements(self) -> int:
+    @staticmethod
+    def num_measurements() -> int:
         return 500
 
-    @property
-    def num_experiments(self) -> int:
+    @staticmethod
+    def num_experiments() -> int:
         return 500
 

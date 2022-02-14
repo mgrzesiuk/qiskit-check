@@ -1,15 +1,4 @@
-import random
-from typing import Collection
-
-from qiskit import QuantumCircuit
-
-from case_studies.deutsch_jozsa.src import deutsch_jozsa
-from case_studies.example_test_base import ExampleTestBase
-from qiskit_check.property_test.assertion import AbstractAssertion, AssertTrue
-from qiskit_check.property_test.resources.test_resource import Qubit, Bit
-from qiskit_check.property_test.resources.qubit_range import QubitRange
-
-
+"""
 class DeutschJozsaPropertyTest(ExampleTestBase):
     def __init__(self):
         self.balanced_or_constant = random.randint(0, 1)
@@ -27,12 +16,13 @@ class DeutschJozsaPropertyTest(ExampleTestBase):
 
         return [Bit() for _ in range(3)]
 
-    def evaluate_correctness(self, measurement):
+    def evaluate_correctness(self, measurement) -> int:
         if self.balanced_or_constant == 1:
-            return measurement == "1"*len(self.bits)
+            return int(measurement == "1"*len(self.bits))
         else:
-            return measurement == "0"*len(self.bits)
+            return int(measurement == "0"*len(self.bits))
 
     @property
     def assertions(self) -> AbstractAssertion:
-        return AssertTrue(self.evaluate_correctness)
+        return AssertTrue(self.evaluate_correctness, )
+"""

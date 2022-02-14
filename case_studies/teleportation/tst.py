@@ -1,10 +1,10 @@
-from typing import Collection
+from typing import Sequence
 
 from qiskit import QuantumCircuit
 
 from case_studies.example_test_base import ExampleTestBase
 from case_studies.teleportation.src import quantum_teleportation
-from qiskit_check.property_test.assertion import AbstractAssertion, AssertTeleported
+from qiskit_check.property_test.assertions.assertion import AbstractAssertion, AssertTeleported
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
 from qiskit_check.property_test.resources.qubit_range import QubitRange, AnyRange
 
@@ -14,14 +14,11 @@ class TeleportationProperty(ExampleTestBase):
     def circuit(self) -> QuantumCircuit:
         return quantum_teleportation()
 
-    @property
-    def qubits(self) -> Collection[Qubit]:
+    def get_qubits(self) -> Sequence[Qubit]:
         return [Qubit(AnyRange()), Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 
-    @property
-    def bits(self) -> Collection[Bit]:
+    def get_bits(self) -> Sequence[Bit]:
         return [Bit(), Bit()]
 
-    @property
-    def assertions(self) -> AbstractAssertion:
-        return AssertTeleported(self.qubits[0])
+    def assertions(self, qubits: Sequence[Qubit], bits: Sequence[Bit]) -> AbstractAssertion:
+        return AssertTeleported(qubits[0], qubits[2])

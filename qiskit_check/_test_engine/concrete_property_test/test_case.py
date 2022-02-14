@@ -1,4 +1,3 @@
-from inspect import signature
 from typing import Type, Dict
 
 from qiskit import QuantumCircuit
@@ -29,8 +28,9 @@ class TestCaseGenerator:  # TODO: maybe a factory for this as well? but what for
         self.qubit_input_generator = qubit_input_generator
 
     def generate(self) -> TestCase:
-        if len(signature(self.property_test_class.__init__).parameters) > 1:
-            raise IncorrectPropertyTestError("Property test __init__ method can have only one argument as input")
+        # TODO: why does this not work?
+        #if len(signature(self.property_test_class.__init__).parameters) > 1:
+        #    raise IncorrectPropertyTestError("Property test __init__ method can have only one argument as input")
 
         concrete_property_test = self.property_test_class()
 
@@ -40,15 +40,17 @@ class TestCaseGenerator:  # TODO: maybe a factory for this as well? but what for
         test_circuit = self._augment_circuit(concrete_property_test.circuit, resource_matcher)
 
         return TestCase(
-            test_circuit, assessor, concrete_property_test.num_measurements,
-            concrete_property_test.num_experiments)
+            test_circuit, assessor, concrete_property_test.num_measurements(),
+            concrete_property_test.num_experiments())
 
     @staticmethod
     def _augment_circuit(circuit: QuantumCircuit, resource_matcher: Dict[Qubit, ConcreteQubit]) -> QuantumCircuit:
-        test_circuit = QuantumCircuit(circuit.qregs, circuit.cregs)
+        test_circuit = QuantumCircuit(len(circuit.qubits), len(circuit.clbits))
 
         for qubit_template, concrete_qubit in resource_matcher.items():
             test_circuit.initialize(concrete_qubit.get_initial_value(), concrete_qubit.get_qubit())
+
+        test_circuit += circuit
 
         test_circuit.measure_all()
         return test_circuit
