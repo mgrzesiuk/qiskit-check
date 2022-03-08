@@ -1,1 +1,1 @@
-from concerete_property_test import ConcretePropertyTest
+from .concerete_property_test import ConcretePropertyTest

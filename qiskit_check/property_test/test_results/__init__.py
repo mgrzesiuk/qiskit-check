@@ -1,2 +1,2 @@
-from resource_result import QubitResult, TomographyResult, MeasurementResult, MeasurementQubitResult, BitResult
-from test_result import TestResult
+from .resource_result import TomographyResult, MeasurementResult
+from .test_result import TestResult

@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Dict
 
 from scipy.stats import fisher_exact
 
@@ -13,11 +13,11 @@ class AssertEntangled(AbstractAssertion):
         self.qubit_0 = qubit_0
         self.qubit_1 = qubit_1
 
-    def verify(self, experiments: List[TestResult], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def verify(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         if self.qubit_0 not in resource_matcher or self.qubit_1 not in resource_matcher:
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
 
-        self.check_if_experiments_empty(experiments)
+        self.check_if_experiments_empty(result)
         """
         contingency table with counts as follows:
             qubit 0 state 0 and qubit 1 in state 0 | qubit 0 in state 1 and qubit 1 in state 0
@@ -29,11 +29,11 @@ class AssertEntangled(AbstractAssertion):
         )
         qubit_0_index = resource_matcher[self.qubit_0].qubit_index
         qubit_1_index = resource_matcher[self.qubit_1].qubit_index
-        # TODO: not exactly safe
-        for experiment in experiments:
-            for states, value in experiment.qiskit_result.get_counts().items():
-                qubit_0_state = int(states[len(states) - qubit_0_index - 1])
-                qubit_1_state = int(states[len(states) - qubit_1_index - 1])
+
+        for measurement_result in result.measurement_results:
+            for states, value in measurement_result.get_counts().items():
+                qubit_0_state = int(states[qubit_0_index])
+                qubit_1_state = int(states[qubit_1_index])
                 contingency_table[qubit_0_state][qubit_1_state] += value
 
         return fisher_exact(contingency_table).p_value

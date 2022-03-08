@@ -1,1 +1,1 @@
-from property_test import PropertyTest
+from .property_test import PropertyTest

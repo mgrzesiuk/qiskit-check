@@ -28,7 +28,7 @@ class CountingPropertyTest(ExampleTestBase):
         return [Bit() for _ in range(self.num_searching_qubits)]
 
     def check_number_of_solutions(
-            self, measurement: dict[str, int], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+            self, measurement: Dict[str, int], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         max_value = -1
         max_measurement = ""
         for key, value in measurement.items():

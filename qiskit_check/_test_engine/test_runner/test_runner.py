@@ -34,7 +34,8 @@ class SimulatorTestRunner(TestRunner):
 
     def _run_test_case(self, test_case: TestCase) -> TestResult:
         transpiled_circuit = transpile(test_case.circuit, self.backend)
-        return self.backend.run(transpiled_circuit, shots=test_case.num_measurements).result()
+        qiskit_result = self.backend.run(transpiled_circuit, shots=test_case.num_measurements).result()
+        return TestResult.from_qiskit_result(qiskit_result)
 
 
 class IBMQDeviceRunner(TestRunner):  # TODO: implement this

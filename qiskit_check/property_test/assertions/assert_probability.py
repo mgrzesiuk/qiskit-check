@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Dict
 
 from scipy.stats import binomtest
 
@@ -16,18 +16,16 @@ class AssertProbability(AbstractAssertion):
         self.state = state
         self.probability = probability
 
-    def verify(self, experiments: List[TestResult], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def verify(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         if self.qubit not in resource_matcher:
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
-        self.check_if_experiments_empty(experiments)
+        self.check_if_experiments_empty(result)
 
         qubit_index = resource_matcher[self.qubit].qubit_index
-        num_shots = sum(experiments[0].values())
+        num_shots = result.num_shots
 
         num_successes = 0
-        for experiment in experiments:
-            for states, value in experiment.items():
-                if states[len(states) - qubit_index - 1] == self.state:
-                    num_successes += value
+        for measurement_result in result.measurement_results:
+            num_successes += measurement_result.get_qubit_result(qubit_index, self.state)
         #  TODO: this kind of ignores measurement vs experiment - what to do about this?
-        return binomtest(num_successes, len(experiments) * num_shots, self.probability).pvalue
+        return binomtest(num_successes, result.num_experiments * num_shots, self.probability).pvalue
