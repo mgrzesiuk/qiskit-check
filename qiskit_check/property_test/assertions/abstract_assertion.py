@@ -21,6 +21,6 @@ class AbstractAssertion(ABC):
         pass
 
     @staticmethod
-    def check_if_experiments_empty(experiments: TestResult) -> None:
-        if experiments.measurement_results == 0:
+    def check_if_experiments_empty(result: TestResult) -> None:
+        if result.num_experiments == 0:
             raise NoExperimentsError("no experiments have been provided")

@@ -18,5 +18,13 @@ class TestResult:
         return not (self.tomography_result is None)
 
     @staticmethod
-    def from_qiskit_result(result: Result):
-        raise NotImplemented()
+    def from_qiskit_result(results: List[Result]):
+        if len(results) > 0:
+            num_shots = results[0].results[0].shots
+        else:
+            num_shots = 0
+        measurement_results = []
+        for result in results:
+            measurement_results.append(MeasurementResult.from_qiskit_result(result))
+        # TODO: Tomography result
+        return TestResult(measurement_results, num_shots)
