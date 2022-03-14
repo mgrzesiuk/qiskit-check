@@ -1,2 +1,2 @@
-from .abstract_printer import AbstractPrinter
-from .terminal_printer import TerminalPrinter
+from qiskit_check._test_engine.printers.abstract_printer import AbstractPrinter
+from qiskit_check._test_engine.printers.terminal_printer import TerminalPrinter

@@ -25,11 +25,6 @@ class Assessor:
                 raise AssertionError(f"{assertion.__class__.__name__} failed, p value of the test was {p_value} which "
                                      f"was lower then required {threshold}")
 
-    def get_measurement_circuit(self, num_qubits: int, num_bits: int) -> QuantumCircuit:
-        circuit = QuantumCircuit(num_qubits, num_bits)
-        circuit.measure_all()
-        return circuit
-
 
 class AssessorFactory:
     @staticmethod

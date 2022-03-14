@@ -4,7 +4,7 @@ from typing import Type, Dict
 from qiskit import QuantumCircuit
 
 from qiskit_check._test_engine.assessor import Assessor, AssessorFactory
-from qiskit_check._test_engine.generator.input_generator.abstract_input_generator import QubitInputGenerator
+from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGenerator
 from qiskit_check.property_test.property_test import PropertyTest
 from qiskit_check.property_test.property_test_errors import IncorrectPropertyTestError, ArgumentMismatchError
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
@@ -39,23 +39,18 @@ class TestCaseGenerator:
         assessor = self.assessor_factory.build(concrete_property_test, resource_matcher)
 
         test_circuit = self._initialize_circuit(concrete_property_test.circuit, resource_matcher)
-        test_circuit = self._measure_circuit(test_circuit, assessor)
 
         return TestCase(test_circuit, assessor, concrete_property_test.num_measurements(),
                         concrete_property_test.num_experiments())
 
     @staticmethod
     def _initialize_circuit(circuit: QuantumCircuit, resource_matcher: Dict[Qubit, ConcreteQubit]) -> QuantumCircuit:
-        test_circuit = QuantumCircuit(len(circuit.qubits), len(circuit.clbits))
+        test_circuit = QuantumCircuit(circuit.num_qubits)
 
         for qubit_template, concrete_qubit in resource_matcher.items():
             test_circuit.initialize(concrete_qubit.get_initial_value(), concrete_qubit.get_qubit())
 
         return test_circuit + circuit
-
-    @staticmethod
-    def _measure_circuit(circuit: QuantumCircuit, assessor: Assessor) -> QuantumCircuit:
-        return circuit + assessor.get_measurement_circuit(len(circuit.qubits), len(circuit.clbits))
 
     def _get_resource_matcher(self, concrete_property_test: PropertyTest) -> Dict[Qubit, ConcreteQubit]:
         specified_qubits = concrete_property_test.qubits

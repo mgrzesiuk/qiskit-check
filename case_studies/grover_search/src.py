@@ -16,4 +16,6 @@ def grover_search(number_of_solutions: int, oracle_circuit: QuantumCircuit) -> Q
 
     problem = AmplificationProblem(oracle_circuit, is_good_state=[])
     grover = Grover(iterations=number_of_rotations)
-    return grover.construct_circuit(problem)
+    circuit = grover.construct_circuit(problem)
+    circuit.measure_all()
+    return circuit

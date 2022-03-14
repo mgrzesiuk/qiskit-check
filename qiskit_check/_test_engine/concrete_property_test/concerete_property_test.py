@@ -1,7 +1,7 @@
 from typing import Type
 
 from qiskit_check._test_engine.assessor import AssessorFactory
-from qiskit_check._test_engine.generator.input_generator.abstract_input_generator import QubitInputGeneratorFactory
+from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGeneratorFactory
 from qiskit_check._test_engine.concrete_property_test.test_case import TestCaseGenerator, TestCase
 from qiskit_check.property_test.property_test import PropertyTest
 

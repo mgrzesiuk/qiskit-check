@@ -1,6 +1,6 @@
 from typing import Dict
 
-from scipy.stats import binomtest
+from scipy.stats import ttest_1samp
 
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.property_test_errors import IncorrectQubitStateError, NoQubitFoundError
@@ -22,10 +22,9 @@ class AssertProbability(AbstractAssertion):
         self.check_if_experiments_empty(result)
 
         qubit_index = resource_matcher[self.qubit].qubit_index
-        num_shots = result.num_shots
 
-        num_successes = 0
+        experiment_results = []
         for measurement_result in result.measurement_results:
-            num_successes += measurement_result.get_qubit_result(qubit_index, self.state)
-        #  TODO: this kind of ignores measurement vs experiment - what to do about this?
-        return binomtest(num_successes, result.num_experiments * num_shots, self.probability).pvalue
+            experiment_results.append(measurement_result.get_qubit_result(qubit_index, self.state)/result.num_shots)
+
+        return ttest_1samp(experiment_results, self.probability, alternative="two-sided").pvalue

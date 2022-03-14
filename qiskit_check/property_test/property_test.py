@@ -9,8 +9,8 @@ from qiskit_check.property_test.assertions import AbstractAssertion
 
 class PropertyTest(ABC):
     def __init__(self) -> None:
-        self.bits = self.get_bits()
         self.qubits = self.get_qubits()
+        self.bits = self.get_bits()
 
     @property
     @abstractmethod

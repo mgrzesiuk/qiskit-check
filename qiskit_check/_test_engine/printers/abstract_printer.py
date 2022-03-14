@@ -1,10 +1,16 @@
 from abc import ABC, abstractmethod
+from typing import Type, Set
 
 from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest
 from qiskit_check._test_engine.concrete_property_test.test_case import TestCase
+from qiskit_check.property_test import PropertyTest
 
 
 class AbstractPrinter(ABC):
+    @abstractmethod
+    def print_introduction(self, collected_tests: Set[Type[PropertyTest]]) -> None:
+        pass
+
     @abstractmethod
     def print_property_test_header(self, property_test: ConcretePropertyTest) -> None:
         pass

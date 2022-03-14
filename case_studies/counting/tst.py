@@ -8,6 +8,7 @@ from case_studies.example_test_base import ExampleTestBase
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit, ConcreteQubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
+from qiskit_check.property_test.test_results import MeasurementResult
 
 
 class CountingPropertyTest(ExampleTestBase):
@@ -28,10 +29,10 @@ class CountingPropertyTest(ExampleTestBase):
         return [Bit() for _ in range(self.num_searching_qubits)]
 
     def check_number_of_solutions(
-            self, measurement: Dict[str, int], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+            self, measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         max_value = -1
         max_measurement = ""
-        for key, value in measurement.items():
+        for key, value in measurement.get_counts().items():
             if value > max_value:
                 max_value = value
                 max_measurement = key

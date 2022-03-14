@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Tuple
 
+from qiskit import QuantumCircuit
 from qiskit.result import Result
 
 from qiskit_check.property_test.test_results import MeasurementResult, TomographyResult
@@ -18,13 +19,13 @@ class TestResult:
         return not (self.tomography_result is None)
 
     @staticmethod
-    def from_qiskit_result(results: List[Result]):
+    def from_qiskit_result(results: List[Result], circuit: QuantumCircuit):
         if len(results) > 0:
             num_shots = results[0].results[0].shots
         else:
             num_shots = 0
         measurement_results = []
         for result in results:
-            measurement_results.append(MeasurementResult.from_qiskit_result(result))
+            measurement_results.append(MeasurementResult.from_qiskit_result(result, circuit))
         # TODO: Tomography result
         return TestResult(measurement_results, num_shots)

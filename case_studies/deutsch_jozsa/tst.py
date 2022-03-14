@@ -7,6 +7,7 @@ from case_studies.deutsch_jozsa.src import deutsch_jozsa
 from case_studies.example_test_base import ExampleTestBase
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources import Bit, Qubit, QubitRange, ConcreteQubit
+from qiskit_check.property_test.test_results import MeasurementResult
 
 
 class DeutschJozsaPropertyTest(ExampleTestBase):
@@ -25,11 +26,15 @@ class DeutschJozsaPropertyTest(ExampleTestBase):
 
         return [Bit() for _ in range(3)]
 
-    def evaluate_correctness(self, measurement: Dict[str, int], resource_matcher: Dict[Qubit, ConcreteQubit]) -> int:
+    def evaluate_correctness(self, measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> int:
+        counts = measurement.get_counts()
+        measurement = list(counts.keys())[0]
+        if len(counts.keys()) > 1:
+            return 0
         if self.balanced_or_constant == 1:
-            return int(measurement == "1"*len(self.bits))
+            return measurement == "1"*len(self.bits)
         else:
-            return int(measurement == "0"*len(self.bits))
+            return measurement == "0"*len(self.bits)
 
     def assertions(self, qubits: Sequence[Qubit], bits: Sequence[Bit]) -> AbstractAssertion:
         return AssertTrue(self.evaluate_correctness, 1)

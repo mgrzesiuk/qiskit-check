@@ -10,7 +10,7 @@ from qiskit_check.property_test.utils import vector_state_to_hopf_coordinates, h
 
 
 class AssertTransformed(AbstractAssertion):
-    def __init__(self, qubit: Qubit, theta_shift: float, phi_shift: float) -> None:  # TODO: is this naming even worth keeping, maybe just theta and phi will be more intuitive
+    def __init__(self, qubit: Qubit, theta_shift: float, phi_shift: float) -> None:
         self.qubit = qubit
         self.theta_shift = theta_shift
         self.phi_shift = phi_shift

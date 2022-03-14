@@ -49,4 +49,6 @@ def superdense_coding(message: str) -> QuantumCircuit:
 
     circuit = encode_message(circuit, 1, message)
 
-    return decode_message(circuit)
+    circuit = decode_message(circuit)
+    circuit.measure_all()
+    return circuit

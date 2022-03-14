@@ -3,7 +3,7 @@ from typing import Sequence, List
 from qiskit import QuantumCircuit
 
 from case_studies.example_test_base import ExampleTestBase
-from case_studies.fourier_transform.src import qft, inverse_qft
+from case_studies.fourier_transform.src import qft
 from qiskit_check.property_test.assertions import AssertTransformed, AbstractAssertion
 from qiskit_check.property_test.resources.test_resource import Qubit, Bit
 from qiskit_check.property_test.resources.qubit_range import AnyRange
@@ -26,5 +26,6 @@ class FourierInverseAndFourierGiveIdentityProperty(ExampleTestBase):
     def circuit(self) -> QuantumCircuit:
         number_qubits = len(self.qubits)
         test_circuit = qft(number_qubits)
-        test_circuit = test_circuit.compose(inverse_qft(number_qubits))
+        test_circuit = test_circuit.compose(qft(number_qubits).inverse())
+        test_circuit.measure_all()
         return test_circuit
