@@ -1,2 +1,3 @@
 from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGenerator, QubitInputGeneratorFactory
 from qiskit_check._test_engine.generator.naive_input_generator import NaiveInputGenerator, NaiveInputGeneratorFactory
+from qiskit_check._test_engine.generator.haar_input_generator import HaarInputGenerator, HaarInputGeneratorFactory

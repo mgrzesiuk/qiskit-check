@@ -5,4 +5,4 @@ test_runner:
 printer:
   class: "qiskit_check._test_engine.printers.TerminalPrinter"
 input_generator_factory:
-  class: "qiskit_check._test_engine.generator.NaiveInputGeneratorFactory"
+  class: "qiskit_check._test_engine.generator.HaarInputGeneratorFactory"

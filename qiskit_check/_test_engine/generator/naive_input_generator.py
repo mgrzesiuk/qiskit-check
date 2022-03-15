@@ -1,18 +1,14 @@
-from random import uniform
-from typing import List, Sequence
-
+from numpy.random import uniform
 from qiskit.quantum_info import Statevector
 
 from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGeneratorFactory
 from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGenerator
+from qiskit_check._test_engine.generator.independent_input_generator import IndependentInputGenerator
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.utils import hopf_coordinates_to_vector_state
 
 
-class NaiveInputGenerator(QubitInputGenerator):
-    def generate(self, qubits: Sequence[Qubit]) -> List[Statevector]:
-        return [self._generate_single_value(qubit) for qubit in qubits]
-
+class NaiveInputGenerator(IndependentInputGenerator):
     @staticmethod
     def _generate_single_value(qubit: Qubit) -> Statevector:
         theta = uniform(qubit.values.theta_start, qubit.values.theta_end)

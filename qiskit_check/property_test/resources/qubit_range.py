@@ -24,6 +24,7 @@ class DegreeRange(QubitRange):
     def __init__(
             self, theta_start: float, phi_start: float,
             theta_end: float, phi_end: float) -> None:
+        # TODO: throw exceptions when range out of range : theta=[0, pi], phi=[0, 2pi]
         theta_in_radians_start = radians(theta_start)
         phi_in_radians_start = radians(phi_start)
         theta_in_radians_end = radians(theta_end)
