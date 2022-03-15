@@ -1,4 +1,4 @@
-from math import asin, sin
+from math import asin, sin, sqrt
 
 from numpy.random import uniform
 from qiskit.quantum_info import Statevector
@@ -26,7 +26,7 @@ class HaarInputGenerator(IndependentInputGenerator):
         unif_upper_band = sin(qubit.values.theta_end/2)**2
 
         unif_generating_theta = uniform(unif_lower_bound, unif_upper_band)
-        theta = 2*asin(unif_generating_theta)
+        theta = 2*asin(sqrt(unif_generating_theta))
         phi = uniform(qubit.values.phi_start, qubit.values.phi_end)
         ground_state_amp, excited_state_amp = hopf_coordinates_to_vector_state(theta, phi)
         return Statevector([ground_state_amp, excited_state_amp])
