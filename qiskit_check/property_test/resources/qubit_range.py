@@ -35,4 +35,4 @@ class DegreeRange(QubitRange):
 
 class AnyRange(QubitRange):
     def __init__(self) -> None:
-        super().__init__(0, 0, 2*pi, 2*pi)
+        super().__init__(0, 0, pi, 2*pi)
