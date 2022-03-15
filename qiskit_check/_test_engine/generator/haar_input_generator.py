@@ -1,14 +1,13 @@
 from qiskit_check._test_engine.generator import QubitInputGenerator, QubitInputGeneratorFactory
 
 """
-https://quantumcomputing.stackexchange.com/questions/23788/what-is-a-haar-random-quantum-state
-https://quantumcomputing.stackexchange.com/questions/15584/is-the-column-vector-of-a-uniformly-sampled-random-unitary-matrix-a-uniformly-sa
-https://en.wikipedia.org/wiki/Bloch_sphere
-https://www.google.com/search?q=bloch+vector+to+hopf+coordinates&oq=bloch+vector+to+hopf+coordinates&aqs=chrome..69i57.5335j0j7&sourceid=chrome&ie=UTF-8
-https://hapax.github.io/physics/mathematics/bloch/
-https://en.wikipedia.org/wiki/Qubit
-https://pennylane.ai/qml/demos/tutorial_haar_measure.html
-https://forest-benchmarking.readthedocs.io/en/latest/examples/random_operators.html
+https://eprint.iacr.org/2019/1204.pdf
+https://pennylane.ai/qml/demos/tutorial_haar_measure.html#show-me-more-math
+https://arxiv.org/pdf/1404.1444.pdf
+http://home.lu.lv/~sd20008/papers/essays/Random%20unitary%20[paper].pdf
+https://arxiv.org/pdf/math-ph/0609050.pdf
+https://statweb.stanford.edu/~cgates/PERSI/papers/subgroup-rand-var.pdf
+https://reader.elsevier.com/reader/sd/pii/S0047259X05000382?token=198945D6C08736B31B46E1DACAF74CE78246A33DE2DD9D621C637662A1ED2E5B1ADCEA09F3B4E0E660F1421686C1A9DE&originRegion=eu-west-1&originCreation=20220315135152
 """
 
 class HaarInputGenerator(QubitInputGenerator):
