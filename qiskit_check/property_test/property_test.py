@@ -23,7 +23,7 @@ class PropertyTest(ABC):
 
     @abstractmethod
     def get_bits(self) -> Sequence[Bit]:
-        pass
+        pass  # TODO: remove this?
 
     @abstractmethod
     def assertions(

@@ -5,4 +5,8 @@ test_runner:
 printer:
   class: "qiskit_check._test_engine.printers.TerminalPrinter"
 input_generator_factory:
-  class: "qiskit_check._test_engine.generator.HaarInputGeneratorFactory"
+  class: "qiskit_check._test_engine.generator.NaiveDistanceInputGeneratorFactory"
+  args:
+    single_qubit_generator_factory_name:
+      class: "qiskit_check._test_engine.generator.HaarInputGeneratorFactory"
+    quantization_rate: 1000
