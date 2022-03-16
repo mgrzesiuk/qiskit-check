@@ -14,10 +14,6 @@ class Qubit(TestResource):
         self.values = values
 
 
-class Bit(TestResource):
-    pass
-
-
 class ConcreteQubit:
     def __init__(self, qubit_index: int, value: Statevector) -> None:
         self.qubit_index = qubit_index

@@ -6,7 +6,7 @@ from qiskit import QuantumCircuit
 from case_studies.counting.src import counting
 from case_studies.example_test_base import ExampleTestBase
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
-from qiskit_check.property_test.resources.test_resource import Qubit, Bit, ConcreteQubit
+from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 from qiskit_check.property_test.test_results import MeasurementResult
 
@@ -25,9 +25,6 @@ class CountingPropertyTest(ExampleTestBase):
     def get_qubits(self) -> Sequence[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(self.num_qubits)]
 
-    def get_bits(self) -> Sequence[Bit]:
-        return [Bit() for _ in range(self.num_searching_qubits)]
-
     def check_number_of_solutions(
             self, measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         max_value = -1
@@ -43,5 +40,5 @@ class CountingPropertyTest(ExampleTestBase):
         M = N * (sin(theta / 2) ** 2)
         return N-M
 
-    def assertions(self, qubits: Sequence[Qubit], bits: Sequence[Bit]) -> AbstractAssertion:
+    def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertTrue(self.check_number_of_solutions, 16)

@@ -3,14 +3,17 @@ from typing import Union, Sequence
 
 from qiskit import QuantumCircuit
 
-from qiskit_check.property_test.resources.test_resource import Qubit, Bit
+from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.assertions import AbstractAssertion
 
 
 class PropertyTest(ABC):
     def __init__(self) -> None:
         self.qubits = self.get_qubits()
-        self.bits = self.get_bits()
+        self.get_qubits = self._get_generated_qubits
+
+    def _get_generated_qubits(self) -> Sequence[Qubit]:
+        return self.qubits
 
     @property
     @abstractmethod
@@ -22,13 +25,7 @@ class PropertyTest(ABC):
         pass
 
     @abstractmethod
-    def get_bits(self) -> Sequence[Bit]:
-        pass  # TODO: remove this?
-
-    @abstractmethod
-    def assertions(
-            self, qubits: Sequence[Qubit],
-            bits: Sequence[Bit]) -> Union[AbstractAssertion, Sequence[AbstractAssertion]]:
+    def assertions(self, qubits: Sequence[Qubit]) -> Union[AbstractAssertion, Sequence[AbstractAssertion]]:
         pass
 
     @staticmethod

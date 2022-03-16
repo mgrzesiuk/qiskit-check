@@ -29,7 +29,7 @@ class Assessor:
 class AssessorFactory:
     @staticmethod
     def build(property_test: PropertyTest, resource_matcher: Dict[Qubit, ConcreteQubit]) -> Assessor:
-        test_assertions = property_test.assertions(property_test.qubits, property_test.bits)
+        test_assertions = property_test.assertions(property_test.qubits)
         if isinstance(test_assertions, Sequence):
             for assertion in test_assertions:
                 if not isinstance(assertion, AbstractAssertion):

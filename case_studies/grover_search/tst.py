@@ -5,7 +5,7 @@ from qiskit import QuantumCircuit
 from case_studies.example_test_base import ExampleTestBase
 from case_studies.grover_search.src import grover_search, oracle
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertMostProbable
-from qiskit_check.property_test.resources.test_resource import Qubit, Bit
+from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
@@ -18,8 +18,5 @@ class GroverSearchPropertyTest(ExampleTestBase):
     def get_qubits(self) -> Collection[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(5)]
 
-    def get_bits(self) -> Collection[Bit]:
-        return []
-
-    def assertions(self, qubits: Sequence[Qubit], bits: Sequence[Bit]) -> AbstractAssertion:
+    def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertMostProbable("1"*len(self.qubits))
