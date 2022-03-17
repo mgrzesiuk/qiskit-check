@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List
 
 from qiskit import QuantumCircuit
 from qiskit.result import Result
@@ -26,6 +26,6 @@ class TestResult:
             num_shots = 0
         measurement_results = []
         for result in results:
-            measurement_results.append(MeasurementResult.from_qiskit_result(result, circuit))
+            measurement_results.append(MeasurementResult(result, circuit))
         # TODO: Tomography result
         return TestResult(measurement_results, num_shots)
