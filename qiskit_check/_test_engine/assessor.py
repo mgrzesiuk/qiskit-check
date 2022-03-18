@@ -1,6 +1,4 @@
-from typing import Dict, List, Sequence, Union
-
-from qiskit import QuantumCircuit
+from typing import Dict, Sequence, Union
 
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.property_test import PropertyTest
@@ -17,7 +15,7 @@ class Assessor:
         self.resource_matcher = resource_matcher
         self.confidence_level = confidence_level
 
-    def assess(self, experiment_results: List[TestResult]) -> None:
+    def assess(self, experiment_results: TestResult) -> None:
         for assertion in self.assertions:
             p_value = assertion.verify(experiment_results, self.resource_matcher)
             if 1 - self.confidence_level > p_value:
