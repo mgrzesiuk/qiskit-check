@@ -28,3 +28,52 @@ def phase_estimation(circuit: QuantumCircuit) -> QuantumCircuit:
         circuit.measure(qubit_index, qubit_index)
 
     return circuit
+
+
+def mutation_no_x_gate_phase_estimation(circuit: QuantumCircuit) -> QuantumCircuit:
+    for qubit in circuit.qubits[:-1]:
+        circuit.h(qubit)
+    circuit = add_controlled_unitaries(circuit)
+    qft_inverse = QFT(len(circuit.qubits) - 1, inverse=True).to_instruction()
+    circuit.append(qft_inverse, circuit.qubits[:-1])
+    for qubit_index in range(len(circuit.qubits) - 1):
+        circuit.measure(qubit_index, qubit_index)
+
+    return circuit
+
+
+def mutation_no_h_gate_phase_estimation(circuit: QuantumCircuit) -> QuantumCircuit:
+    circuit.x(circuit.qubits[-1])
+    circuit = add_controlled_unitaries(circuit)
+    qft_inverse = QFT(len(circuit.qubits) - 1, inverse=True).to_instruction()
+    circuit.append(qft_inverse, circuit.qubits[:-1])
+    for qubit_index in range(len(circuit.qubits) - 1):
+        circuit.measure(qubit_index, qubit_index)
+
+    return circuit
+
+
+def mutation_no_iqft_phase_estimation(circuit: QuantumCircuit) -> QuantumCircuit:
+    for qubit in circuit.qubits[:-1]:
+        circuit.h(qubit)
+    circuit.x(circuit.qubits[-1])
+    circuit = add_controlled_unitaries(circuit)
+    for qubit_index in range(len(circuit.qubits) - 1):
+        circuit.measure(qubit_index, qubit_index)
+
+    return circuit
+
+
+def mutation_additional_h_gate_phase_estimation(circuit: QuantumCircuit) -> QuantumCircuit:
+    for qubit in circuit.qubits[:-1]:
+        circuit.h(qubit)
+    circuit.x(circuit.qubits[-1])
+    circuit = add_controlled_unitaries(circuit)
+    qft_inverse = QFT(len(circuit.qubits) - 1, inverse=True).to_instruction()
+    circuit.append(qft_inverse, circuit.qubits[:-1])
+    for qubit in circuit.qubits[:-1]:
+        circuit.h(qubit)
+    for qubit_index in range(len(circuit.qubits) - 1):
+        circuit.measure(qubit_index, qubit_index)
+
+    return circuit

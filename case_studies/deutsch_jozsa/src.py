@@ -40,3 +40,52 @@ def deutsch_jozsa(circuit: QuantumCircuit, oracle: int) -> QuantumCircuit:
         circuit.measure(qubit_index, qubit_index)
 
     return circuit
+
+
+def mutation_no_oracle_deutsch_jozsa(circuit: QuantumCircuit, oracle: int) -> QuantumCircuit:
+    circuit.x(circuit.qubits[-1])
+
+    for qubit in circuit.qubits:
+        circuit.h(qubit)
+
+    for qubit in circuit.qubits[:-1]:
+        circuit.h(qubit)
+
+    for qubit_index in range(len(circuit.qubits[:-1])):
+        circuit.measure(qubit_index, qubit_index)
+
+    return circuit
+
+
+def mutation_no_final_h_deutsch_jozsa(circuit: QuantumCircuit, oracle: int) -> QuantumCircuit:
+    circuit.x(circuit.qubits[-1])
+
+    for qubit in circuit.qubits:
+        circuit.h(qubit)
+    if oracle == 1:
+        oracle_gate = balanced_oracle(QuantumCircuit(len(circuit.qubits)))
+    else:
+        oracle_gate = constant_oracle(QuantumCircuit(len(circuit.qubits)))
+
+    circuit.append(oracle_gate, circuit.qubits)
+
+    for qubit_index in range(len(circuit.qubits[:-1])):
+        circuit.measure(qubit_index, qubit_index)
+
+    return circuit
+
+
+def mutation_no_starting_h_deutsch_jozsa(circuit: QuantumCircuit, oracle: int) -> QuantumCircuit:
+    circuit.x(circuit.qubits[-1])
+
+    if oracle == 1:
+        oracle_gate = balanced_oracle(QuantumCircuit(len(circuit.qubits)))
+    else:
+        oracle_gate = constant_oracle(QuantumCircuit(len(circuit.qubits)))
+
+    circuit.append(oracle_gate, circuit.qubits)
+
+    for qubit_index in range(len(circuit.qubits[:-1])):
+        circuit.measure(qubit_index, qubit_index)
+
+    return circuit

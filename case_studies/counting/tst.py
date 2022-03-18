@@ -1,3 +1,4 @@
+from abc import ABC
 from math import sin, pi
 from typing import Dict, Sequence
 
@@ -11,16 +12,12 @@ from qiskit_check.property_test.resources.qubit_range import QubitRange
 from qiskit_check.property_test.test_results import MeasurementResult
 
 
-class CountingPropertyTest(ExampleTestBase):
+class AbstractCountingPropertyTest(ExampleTestBase, ABC):
     def __init__(self):
         self.num_counting_qubits = 4
         self.num_searching_qubits = 4
         self.num_qubits = self.num_counting_qubits + self.num_searching_qubits
         super().__init__()
-
-    @property
-    def circuit(self) -> QuantumCircuit:
-        return counting(self.num_counting_qubits, self.num_searching_qubits)
 
     def get_qubits(self) -> Sequence[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(self.num_qubits)]
@@ -42,3 +39,9 @@ class CountingPropertyTest(ExampleTestBase):
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertTrue(self.check_number_of_solutions, 16)
+
+
+class CountingPropertyTest(AbstractCountingPropertyTest):
+    @property
+    def circuit(self) -> QuantumCircuit:
+        return counting(self.num_counting_qubits, self.num_searching_qubits)

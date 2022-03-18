@@ -1,3 +1,4 @@
+from abc import ABC
 from random import randint
 from typing import Collection, Sequence, Dict
 
@@ -10,14 +11,10 @@ from qiskit_check.property_test.resources import Qubit, QubitRange, ConcreteQubi
 from qiskit_check.property_test.test_results import MeasurementResult
 
 
-class DeutschJozsaPropertyTest(ExampleTestBase):
+class AbstractDeutschJozsaPropertyTest(ExampleTestBase, ABC):
     def __init__(self):
         self.balanced_or_constant = randint(0, 1)
         super().__init__()
-
-    @property
-    def circuit(self) -> QuantumCircuit:
-        return deutsch_jozsa(QuantumCircuit(4, 3), self.balanced_or_constant)
 
     def get_qubits(self) -> Collection[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(4)]
@@ -34,3 +31,9 @@ class DeutschJozsaPropertyTest(ExampleTestBase):
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertTrue(self.evaluate_correctness, 1)
+
+
+class DeutschJozsaPropertyTest(AbstractDeutschJozsaPropertyTest):
+    @property
+    def circuit(self) -> QuantumCircuit:
+        return deutsch_jozsa(QuantumCircuit(4, 3), self.balanced_or_constant)

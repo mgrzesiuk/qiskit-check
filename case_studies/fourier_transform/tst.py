@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Sequence, List
 
 from qiskit import QuantumCircuit
@@ -9,7 +10,7 @@ from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import AnyRange
 
 
-class FourierInverseAndFourierGiveIdentityProperty(ExampleTestBase):
+class AbstractFourierInverseAndFourierGiveIdentityProperty(ExampleTestBase, ABC):
     def get_qubits(self) -> Sequence[Qubit]:
         return [Qubit(AnyRange()), Qubit(AnyRange()), Qubit(AnyRange())]
 
@@ -19,6 +20,8 @@ class FourierInverseAndFourierGiveIdentityProperty(ExampleTestBase):
             assertions.append(AssertTransformed(qubit, 0, 0))
         return assertions
 
+
+class FourierInverseAndFourierGiveIdentityProperty(AbstractFourierInverseAndFourierGiveIdentityProperty):
     @property
     def circuit(self) -> QuantumCircuit:
         number_qubits = len(self.qubits)

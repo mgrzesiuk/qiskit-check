@@ -44,3 +44,73 @@ def counting(num_counting_qubits: int, num_searching_qubits: int) -> QuantumCirc
     circuit.measure(range(num_counting_qubits), range(num_counting_qubits))
 
     return circuit
+
+
+def mutation_counting_no_inverse(num_counting_qubits: int, num_searching_qubits: int) -> QuantumCircuit:
+    num_qubits = num_counting_qubits + num_searching_qubits
+    circuit = QuantumCircuit(num_qubits, num_counting_qubits)
+
+    for qubit in circuit.qubits:
+        circuit.h(qubit)
+
+    oracle_circuit = oracle(QuantumCircuit(num_searching_qubits))
+
+    controlled_grover_gate = controlled_grover(oracle_circuit)
+
+    iterations = 1
+    for qubit in range(num_counting_qubits):
+        for i in range(iterations):
+            circuit.append(controlled_grover_gate, [qubit] + [*range(num_counting_qubits, num_qubits)])
+        iterations *= 2
+
+    circuit.measure(range(num_counting_qubits), range(num_counting_qubits))
+
+    return circuit
+
+
+def mutation_counting_too_little_grover_gates(num_counting_qubits: int, num_searching_qubits: int) -> QuantumCircuit:
+    num_qubits = num_counting_qubits + num_searching_qubits
+    circuit = QuantumCircuit(num_qubits, num_counting_qubits)
+
+    for qubit in circuit.qubits:
+        circuit.h(qubit)
+
+    oracle_circuit = oracle(QuantumCircuit(num_searching_qubits))
+
+    controlled_grover_gate = controlled_grover(oracle_circuit)
+
+    iterations = 1
+    for qubit in range(num_counting_qubits):
+        for i in range(iterations-1):
+            circuit.append(controlled_grover_gate, [qubit] + [*range(num_counting_qubits, num_qubits)])
+        iterations *= 2
+
+    circuit.measure(range(num_counting_qubits), range(num_counting_qubits))
+
+    return circuit
+
+
+def mutation_counting_additional_x_gates(num_counting_qubits: int, num_searching_qubits: int) -> QuantumCircuit:
+    num_qubits = num_counting_qubits + num_searching_qubits
+    circuit = QuantumCircuit(num_qubits, num_counting_qubits)
+
+    for qubit in circuit.qubits:
+        circuit.x(qubit)
+        circuit.h(qubit)
+
+    oracle_circuit = oracle(QuantumCircuit(num_searching_qubits))
+
+    controlled_grover_gate = controlled_grover(oracle_circuit)
+
+    iterations = 1
+    for qubit in range(num_counting_qubits):
+        for i in range(iterations+1):
+            circuit.append(controlled_grover_gate, [qubit] + [*range(num_counting_qubits, num_qubits)])
+        iterations *= 2
+
+    inverse_qft_gate = inverse_qft(num_counting_qubits).to_gate()
+    circuit.append(inverse_qft_gate, range(num_counting_qubits))
+
+    circuit.measure(range(num_counting_qubits), range(num_counting_qubits))
+
+    return circuit

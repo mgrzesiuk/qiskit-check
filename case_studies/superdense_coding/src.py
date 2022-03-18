@@ -52,3 +52,35 @@ def superdense_coding(message: str) -> QuantumCircuit:
     circuit = decode_message(circuit)
     circuit.measure_all()
     return circuit
+
+
+def mutation_no_bell_pair_superdense_coding(message: str) -> QuantumCircuit:
+    circuit = QuantumCircuit(2)
+
+    circuit = encode_message(circuit, 1, message)
+
+    circuit = decode_message(circuit)
+    circuit.measure_all()
+    return circuit
+
+
+def mutation_no_encoding_superdense_coding(message: str) -> QuantumCircuit:
+    circuit = QuantumCircuit(2)
+
+    circuit = create_bell_pair(circuit)
+
+    circuit = decode_message(circuit)
+    circuit.measure_all()
+    return circuit
+
+
+def mutation_no_decoding_superdense_coding(message: str) -> QuantumCircuit:
+    circuit = QuantumCircuit(2)
+
+    circuit = create_bell_pair(circuit)
+
+    circuit = encode_message(circuit, 1, message)
+
+    circuit.measure_all()
+    return circuit
+
