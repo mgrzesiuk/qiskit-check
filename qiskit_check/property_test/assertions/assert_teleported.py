@@ -11,7 +11,7 @@ class AssertTeleported(AbstractAssertion):
         self.qubit_to_teleport = qubit_to_teleport
         self.target_qubit = target_qubit
 
-    def verify(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         if self.qubit_to_teleport not in resource_matcher or self.target_qubit not in resource_matcher:
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
 
@@ -19,4 +19,10 @@ class AssertTeleported(AbstractAssertion):
         # TODO: this checks if prob check out but not if the qubit got teleported (maybe since -|0> != |0> but here they are)
         expected_ground_state_probability = resource_matcher[self.qubit_to_teleport].value.probabilities()[0]
         assert_probability = AssertProbability(self.target_qubit, "0", expected_ground_state_probability)
-        return assert_probability.verify(result, resource_matcher)
+        return assert_probability.get_p_value(result, resource_matcher)
+
+    def verify(self, confidence_level: float, p_value: float) -> None:
+        if 1 - confidence_level > p_value:
+            threshold = round(1 - confidence_level, 5)
+            raise AssertionError(f"AssertTeleported failed, p value of the test was {p_value} which "
+                                 f"was lower then required {threshold} to fail to reject equality hypothesis")

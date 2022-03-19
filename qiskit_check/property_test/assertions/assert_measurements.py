@@ -20,15 +20,21 @@ class AssertMostProbable(AbstractAssertion):
         else:
             return 0
 
-    def verify(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
-        return self.assert_true.verify(result, resource_matcher)
+    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+        return self.assert_true.get_p_value(result, resource_matcher)
+
+    def verify(self, confidence_level: float, p_value: float) -> None:
+        if 1 - confidence_level > p_value:
+            threshold = round(1 - confidence_level, 5)
+            raise AssertionError(f"AssertMostProbable failed, p value of the test was {p_value} which "
+                                 f"was lower then required {threshold}")
 
 
 class AssertMeasurementEqual(AbstractAssertion):
     def __init__(self, expected_state) -> None:
         self.expected_state = expected_state
 
-    def verify(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         self.check_if_experiments_empty(result)
 
         minimal_probability = 1
@@ -45,3 +51,9 @@ class AssertMeasurementEqual(AbstractAssertion):
                     minimal_probability = current_probability
 
         return minimal_probability
+
+    def verify(self, confidence_level: float, p_value: float) -> None:
+        if 1 - confidence_level > p_value:
+            threshold = round(1 - confidence_level, 5)
+            raise AssertionError(f"AssertMeasurementEqual failed, p value of the test was {p_value} which "
+                                 f"was lower then required {threshold}")

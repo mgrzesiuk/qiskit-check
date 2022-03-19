@@ -11,7 +11,7 @@ class ExampleTestBase(PropertyTest, ABC):
 
     @staticmethod
     def num_test_cases() -> int:
-        return 2
+        return 10
 
     @staticmethod
     def num_measurements() -> int:

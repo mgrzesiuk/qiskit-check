@@ -17,11 +17,8 @@ class Assessor:
 
     def assess(self, experiment_results: TestResult) -> None:
         for assertion in self.assertions:
-            p_value = assertion.verify(experiment_results, self.resource_matcher)
-            if 1 - self.confidence_level > p_value:
-                threshold = round(1-self.confidence_level, 5)
-                raise AssertionError(f"{assertion.__class__.__name__} failed, p value of the test was {p_value} which "
-                                     f"was lower then required {threshold}")
+            p_value = assertion.get_p_value(experiment_results, self.resource_matcher)
+            assertion.verify(self.confidence_level, p_value)
 
 
 class AssessorFactory:

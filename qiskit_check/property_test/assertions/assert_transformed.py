@@ -15,7 +15,7 @@ class AssertTransformed(AbstractAssertion):
         self.theta_shift = theta_shift
         self.phi_shift = phi_shift
 
-    def verify(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         if self.qubit not in resource_matcher:
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
 
@@ -31,4 +31,10 @@ class AssertTransformed(AbstractAssertion):
 
         expected_ground_state_probability = new_expected_state.probabilities()[0]
         assert_probability = AssertProbability(self.qubit, "0", expected_ground_state_probability)
-        return assert_probability.verify(result, resource_matcher)
+        return assert_probability.get_p_value(result, resource_matcher)
+
+    def verify(self, confidence_level: float, p_value: float) -> None:
+        if 1 - confidence_level > p_value:
+            threshold = round(1 - confidence_level, 5)
+            raise AssertionError(f"AssertTransformed failed, p value of the test was {p_value} which "
+                                 f"was lower then required {threshold} to fail to reject equality hypothesis")

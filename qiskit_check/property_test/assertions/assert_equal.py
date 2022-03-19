@@ -14,7 +14,7 @@ class AssertEqual(AbstractAssertion):
         self.qubit_1 = qubit_1
         self.test = ttest_ind if ideal else ttest_rel
 
-    def verify(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         if self.qubit_0 not in resource_matcher or self.qubit_1 not in resource_matcher:
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
 
@@ -31,3 +31,9 @@ class AssertEqual(AbstractAssertion):
             qubit_1_values.append(measurement.get_qubit_result(qubit_1_index, "0"))
 
         return self.test(qubit_0_values, qubit_1_values).pvalue
+
+    def verify(self, confidence_level: float, p_value: float) -> None:
+        if 1 - confidence_level > p_value:
+            threshold = round(1 - confidence_level, 5)
+            raise AssertionError(f"AssertEqual failed, p value of the test was {p_value} which "
+                                 f"was lower then required {threshold} to fail to reject equality hypothesis")
