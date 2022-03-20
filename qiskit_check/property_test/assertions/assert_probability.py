@@ -28,9 +28,3 @@ class AssertProbability(AbstractAssertion):
             experiment_results.append(measurement_result.get_qubit_result(qubit_index, self.state)/result.num_shots)
 
         return ttest_1samp(experiment_results, self.probability, alternative="two-sided").pvalue
-
-    def verify(self, confidence_level: float, p_value: float) -> None:
-        if 1 - confidence_level > p_value:
-            threshold = round(1 - confidence_level, 5)
-            raise AssertionError(f"AssertProbability failed, p value of the test was {p_value} which "
-                                 f"was lower then required {threshold} to fail to reject equality hypothesis")

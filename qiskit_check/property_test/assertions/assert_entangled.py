@@ -29,7 +29,7 @@ class AssertEntangled(AbstractAssertion):
         return p_value
 
     def verify(self, confidence_level: float, p_value: float) -> None:
-        if p_value > 1 - confidence_level:
+        if p_value >= 1 - confidence_level:
             threshold = round(1 - confidence_level, 5)
             raise AssertionError(f"AssertEntangled failed, p value of the test was {p_value} which "
                                  f"was higher then required {threshold} to reject independence hypothesis")

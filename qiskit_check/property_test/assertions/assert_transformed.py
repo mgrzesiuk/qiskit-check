@@ -32,9 +32,3 @@ class AssertTransformed(AbstractAssertion):
         expected_ground_state_probability = new_expected_state.probabilities()[0]
         assert_probability = AssertProbability(self.qubit, "0", expected_ground_state_probability)
         return assert_probability.get_p_value(result, resource_matcher)
-
-    def verify(self, confidence_level: float, p_value: float) -> None:
-        if 1 - confidence_level > p_value:
-            threshold = round(1 - confidence_level, 5)
-            raise AssertionError(f"AssertTransformed failed, p value of the test was {p_value} which "
-                                 f"was lower then required {threshold} to fail to reject equality hypothesis")

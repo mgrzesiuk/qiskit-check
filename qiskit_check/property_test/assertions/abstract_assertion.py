@@ -20,7 +20,6 @@ class AbstractAssertion(ABC):
         """
         pass
 
-    @abstractmethod
     def verify(self, confidence_level: float, p_value: float) -> None:
         """
         verify if assertion passed (do nothing then) or raise an error if it failed
@@ -30,7 +29,11 @@ class AbstractAssertion(ABC):
 
         Returns: None
         """
-        pass
+
+        if 1 - confidence_level >= p_value:
+            threshold = round(1 - confidence_level, 5)
+            raise AssertionError(f"{self.__name__} failed, p value of the test was {p_value} which "
+                                 f"was lower then required {threshold} to fail to reject equality hypothesis")
 
     @staticmethod
     def check_if_experiments_empty(result: TestResult) -> None:

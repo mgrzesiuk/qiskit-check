@@ -21,9 +21,3 @@ class AssertTrue(AbstractAssertion):
         for measurement in result.measurement_results:
             experiment_values.append(self.verify_function(measurement, resource_matcher))
         return ttest_1samp(experiment_values, self.target_value).pvalue
-
-    def verify(self, confidence_level: float, p_value: float) -> None:
-        if 1 - confidence_level > p_value:
-            threshold = round(1 - confidence_level, 5)
-            raise AssertionError(f"AssertTrue failed, p value of the test was {p_value} which "
-                                 f"was lower then required {threshold} to fail to reject equality hypothesis")

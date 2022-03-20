@@ -1,6 +1,5 @@
 from abc import ABC
 
-
 from qiskit_check.property_test.property_test import PropertyTest
 
 
@@ -11,7 +10,7 @@ class ExampleTestBase(PropertyTest, ABC):
 
     @staticmethod
     def num_test_cases() -> int:
-        return 10
+        return 2
 
     @staticmethod
     def num_measurements() -> int:
