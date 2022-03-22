@@ -1,19 +1,21 @@
-from typing import Dict, Sequence, Union
+from typing import Dict, Sequence
 
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.property_test import PropertyTest
 from qiskit_check.property_test.property_test_errors import IncorrectAssertionError
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
 from qiskit_check.property_test.test_results import TestResult
+from qiskit_check._test_engine.state_estimation.tomography_requirement import TomographyRequirement
 
 
 class Assessor:
     def __init__(
-            self, assertions: Union[AbstractAssertion, Sequence[AbstractAssertion]],
-            confidence_level: float, resource_matcher: Dict[Qubit, ConcreteQubit]) -> None:
+            self, assertions: Sequence[AbstractAssertion], confidence_level: float,
+            resource_matcher: Dict[Qubit, ConcreteQubit], tomography_requirement: TomographyRequirement) -> None:
         self.assertions = assertions
         self.resource_matcher = resource_matcher
         self.confidence_level = confidence_level
+        self.tomography_requirement = tomography_requirement
 
     def assess(self, experiment_results: TestResult) -> None:
         for assertion in self.assertions:
@@ -35,4 +37,6 @@ class AssessorFactory:
         else:
             raise IncorrectAssertionError(property_test)
 
-        return Assessor(assertions, property_test.confidence_level(), resource_matcher)
+        tomography_requirement = TomographyRequirement(assertions)
+
+        return Assessor(assertions, property_test.confidence_level(), resource_matcher, tomography_requirement)

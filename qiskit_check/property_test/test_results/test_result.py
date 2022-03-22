@@ -9,7 +9,7 @@ from qiskit_check.property_test.test_results import MeasurementResult, Tomograph
 class TestResult:
     def __init__(
             self, measurement_results: List[MeasurementResult], num_shots: int,
-            tomography_result: TomographyResult = None) -> None:
+            tomography_result: TomographyResult) -> None:
         self.measurement_results = measurement_results
         self.tomography_result = tomography_result
         self.num_experiments = len(measurement_results)
@@ -19,7 +19,7 @@ class TestResult:
         return not (self.tomography_result is None)
 
     @staticmethod
-    def from_qiskit_result(results: List[Result], circuit: QuantumCircuit):
+    def from_qiskit_result(results: List[Result], tomography_result: TomographyResult, circuit: QuantumCircuit):
         if len(results) > 0:
             num_shots = results[0].results[0].shots
         else:
@@ -27,5 +27,4 @@ class TestResult:
         measurement_results = []
         for result in results:
             measurement_results.append(MeasurementResult(result, circuit))
-        # TODO: Tomography result
-        return TestResult(measurement_results, num_shots)
+        return TestResult(measurement_results, num_shots, tomography_result)

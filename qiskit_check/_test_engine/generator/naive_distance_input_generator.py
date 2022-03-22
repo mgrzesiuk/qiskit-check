@@ -1,4 +1,4 @@
-from typing import Sequence, Tuple, List, Dict
+from typing import Sequence, Tuple, List
 
 from numpy import ndarray, asarray, cos, sin, dot, arccos, linspace, longdouble
 from numpy.random import choice
@@ -6,7 +6,6 @@ from qiskit.quantum_info import Statevector
 
 from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGeneratorFactory
 from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGenerator
-from qiskit_check._test_engine.utils import get_object_from_config
 from qiskit_check.property_test.resources import Qubit, QubitRange
 from qiskit_check.property_test.utils import vector_state_to_hopf_coordinates
 
@@ -123,8 +122,9 @@ class NaiveDistanceSingleInputGenerator:
 
 
 class NaiveDistanceInputGeneratorFactory(QubitInputGeneratorFactory):
-    def __init__(self, single_qubit_generator_factory_name: Dict[str, any], quantization_rate: float = 1000) -> None:
-        self.single_qubit_generator_factory = get_object_from_config(single_qubit_generator_factory_name)
+    def __init__(
+            self, single_qubit_generator_factory: QubitInputGeneratorFactory, quantization_rate: float = 1000) -> None:
+        self.single_qubit_generator_factory = single_qubit_generator_factory
         self.quantization_rate = quantization_rate
 
     def build(self) -> NaiveDistanceInputGenerator:

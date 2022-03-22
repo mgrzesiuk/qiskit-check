@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, Sequence
 
 from qiskit_check.property_test.property_test_errors import NoExperimentsError
 
@@ -32,8 +32,11 @@ class AbstractAssertion(ABC):
 
         if 1 - confidence_level >= p_value:
             threshold = round(1 - confidence_level, 5)
-            raise AssertionError(f"{self.__name__} failed, p value of the test was {p_value} which "
+            raise AssertionError(f"{self.__class__.__name__} failed, p value of the test was {p_value} which "
                                  f"was lower then required {threshold} to fail to reject equality hypothesis")
+
+    def get_qubits_requiring_tomography(self) -> Sequence[Qubit]:
+        return ()
 
     @staticmethod
     def check_if_experiments_empty(result: TestResult) -> None:

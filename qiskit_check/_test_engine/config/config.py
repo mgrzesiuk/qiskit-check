@@ -1,11 +1,8 @@
-from typing import Dict
-
 from yaml import safe_load
 
 from qiskit_check._test_engine.config.default_config import DefaultConfig
 from qiskit_check._test_engine.config.abstract_config import AbstractConfig
 from qiskit_check._test_engine.generator import QubitInputGeneratorFactory
-from qiskit_check._test_engine.printers import AbstractPrinter
 from qiskit_check._test_engine.test_runner import AbstractTestRunner
 from qiskit_check._test_engine.utils import get_object_from_config
 
@@ -21,13 +18,6 @@ class Config(AbstractConfig):
             return self.default_config.get_test_runner()
 
         return get_object_from_config(self.config[test_runner_key])
-
-    def get_printer(self) -> AbstractPrinter:
-        printer_key = "printer"
-        if self.config is None or printer_key not in self.config:
-            return self.default_config.get_printer()
-
-        return get_object_from_config(self.config[printer_key])
 
     def get_input_generator_factory(self) -> QubitInputGeneratorFactory:
         input_generator_factory_key = "input_generator_factory"

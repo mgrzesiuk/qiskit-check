@@ -12,19 +12,18 @@ from qiskit_check.property_test.property_test import PropertyTest
 class Processor:
     def __init__(
             self, test_collector: Collector, assessor_factory: AssessorFactory,
-            qubit_input_generator_factory: QubitInputGeneratorFactory, test_runner: AbstractTestRunner,
-            printer: AbstractPrinter) -> None:
+            qubit_input_generator_factory: QubitInputGeneratorFactory, test_runner: AbstractTestRunner) -> None:
         self.test_collector = test_collector
         self.assessor_factory = assessor_factory
         self.qubit_input_generator_factory = qubit_input_generator_factory
         self.test_runner = test_runner
-        self.printer = printer
+        self.printer = self.test_runner.printer
 
     def process(self, root_test_directory: str) -> None:
         property_test_classes = self.test_collector.collect(root_test_directory)
         self.printer.print_introduction(property_test_classes)
         concrete_property_tests = self._generate_concrete_tests(property_test_classes)
-        tests_failed, tests_succeeded = self.test_runner.run_tests(concrete_property_tests, self.printer)
+        tests_failed, tests_succeeded = self.test_runner.run_tests(concrete_property_tests)
         self.printer.print_summary(tests_failed, tests_succeeded)
         if len(tests_failed) > 0:
             exit(1)

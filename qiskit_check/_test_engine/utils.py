@@ -9,10 +9,17 @@ def _get_class_object_from_class_path(class_path: str) -> type:
 
 
 def get_object_from_config(config: Dict[str, any]) -> object:
-    class_name = config["class"]
+    class_key = "class"
+    class_name = config[class_key]
     class_object = _get_class_object_from_class_path(class_name)
     arg_key = "args"
     if arg_key in config:
         arguments = config[arg_key]
-        return class_object(**arguments)
+        parsed_arguments = {}
+        for key, value in arguments.items():
+            if isinstance(value, dict) and class_key in value:
+                parsed_arguments[key] = get_object_from_config(value)
+            else:
+                parsed_arguments[key] = value
+        return class_object(**parsed_arguments)
     return class_object()

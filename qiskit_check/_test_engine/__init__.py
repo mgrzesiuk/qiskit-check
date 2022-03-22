@@ -31,9 +31,8 @@ def get_processor(configuration: AbstractConfig) -> Processor:
 
     qubit_input_generator_factory = configuration.get_input_generator_factory()
     runner = configuration.get_test_runner()
-    printer = configuration.get_printer()
 
-    return Processor(test_collector, assessor_factory, qubit_input_generator_factory, runner, printer)
+    return Processor(test_collector, assessor_factory, qubit_input_generator_factory, runner)
 
 
 def main() -> None:
