@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from qiskit import Aer, transpile, IBMQ
+from qiskit import Aer, transpile, IBMQ, QuantumCircuit
 from qiskit.result import Result
 from qiskit.tools.monitor import job_monitor
 
@@ -17,8 +17,8 @@ class TestRunner(AbstractTestRunner, ABC):
             self.printer.print_test_case_header(test_case)
             experiment_results = []
             for _ in range(test_case.num_experiments):
-                experiment_results.append(self._run_test_case(test_case))
-            tomography_result = self.state_estimator.run(test_case)
+                experiment_results.append(self._run_circuit(test_case.circuit, test_case.num_measurements))
+            tomography_result = self.state_estimator.run(test_case, self._run_circuit)
             test_results = TestResult.from_qiskit_result(experiment_results, tomography_result, test_case.circuit)
             try:
                 test_case.assessor.assess(test_results)
@@ -28,7 +28,7 @@ class TestRunner(AbstractTestRunner, ABC):
                 raise error
 
     @abstractmethod
-    def _run_test_case(self, test_case: TestCase) -> Result:
+    def _run_circuit(self, circuit: QuantumCircuit, num_shots: int) -> Result:
         pass
 
 
@@ -37,9 +37,9 @@ class SimulatorTestRunner(TestRunner):
         super().__init__(printer, tomography)
         self.backend = Aer.get_backend(simulator_name)
 
-    def _run_test_case(self, test_case: TestCase) -> Result:
-        transpiled_circuit = transpile(test_case.circuit, self.backend)
-        return self.backend.run(transpiled_circuit, shots=test_case.num_measurements).result()
+    def _run_circuit(self, circuit: QuantumCircuit, num_shots: int) -> Result:
+        transpiled_circuit = transpile(circuit, self.backend)
+        return self.backend.run(transpiled_circuit, shots=num_shots).result()
 
 
 class IBMQDeviceRunner(TestRunner):
@@ -51,8 +51,8 @@ class IBMQDeviceRunner(TestRunner):
         provider = IBMQ.get_provider(hub=provider_hub, group=provider_group, project=provider_project)
         self.backend = provider.get_backend(backend_name)
 
-    def _run_test_case(self, test_case: TestCase) -> Result:
-        transpiled_circuit = transpile(test_case.circuit, self.backend)
-        job = self.backend.run(transpiled_circuit, shots=test_case.num_measurements)
+    def _run_circuit(self, circuit: QuantumCircuit, num_shots: int) -> Result:
+        transpiled_circuit = transpile(circuit, self.backend)
+        job = self.backend.run(transpiled_circuit, shots=num_shots)
         job_monitor(job, interval=2)
         return job.result()

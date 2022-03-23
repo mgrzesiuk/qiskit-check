@@ -25,9 +25,9 @@ class AssertTransformed(AbstractAssertion):
         qubit_initial_value = resource_matcher[self.qubit].value.to_dict()
         theta, phi = vector_state_to_hopf_coordinates(qubit_initial_value["0"], qubit_initial_value["1"])
         new_theta = theta + self.theta_shift
-        new_phase = phi + self.phi_shift
+        new_phi = phi + self.phi_shift
 
-        new_expected_state = Statevector([*hopf_coordinates_to_vector_state(new_theta, new_phase)])
+        new_expected_state = Statevector([*hopf_coordinates_to_vector_state(new_theta, new_phi)])
 
         expected_ground_state_probability = new_expected_state.probabilities()[0]
         assert_probability = AssertProbability(self.qubit, "0", expected_ground_state_probability)

@@ -35,8 +35,8 @@ class AbstractAssertion(ABC):
             raise AssertionError(f"{self.__class__.__name__} failed, p value of the test was {p_value} which "
                                  f"was lower then required {threshold} to fail to reject equality hypothesis")
 
-    def get_qubits_requiring_tomography(self) -> Sequence[Qubit]:
-        return ()
+    def get_qubits_requiring_tomography(self) -> Dict[Qubit, int]:
+        return {}
 
     @staticmethod
     def check_if_experiments_empty(result: TestResult) -> None:
