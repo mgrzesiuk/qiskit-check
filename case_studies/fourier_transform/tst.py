@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Sequence, List
 
 from qiskit import QuantumCircuit
+from scipy.spatial.transform import Rotation
 
 from case_studies.example_test_base import ExampleTestBase
 from case_studies.fourier_transform.src import qft
@@ -17,7 +18,7 @@ class AbstractFourierInverseAndFourierGiveIdentityProperty(ExampleTestBase, ABC)
     def assertions(self, qubits: Sequence[Qubit]) -> List[AbstractAssertion]:
         assertions = []
         for qubit in self.qubits:
-            assertions.append(AssertTransformed(qubit, 0, 0))
+            assertions.append(AssertTransformed(qubit, Rotation.identity()))
         return assertions
 
 

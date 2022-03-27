@@ -15,13 +15,16 @@ class TestRunner(AbstractTestRunner, ABC):
     def _run_test(self, property_test: ConcretePropertyTest) -> None:
         for test_case in property_test:
             self.printer.print_test_case_header(test_case)
+
             experiment_results = []
             for _ in range(test_case.num_experiments):
                 experiment_results.append(self._run_circuit(test_case.circuit, test_case.num_measurements))
             tomography_result = self.state_estimator.run(test_case, self._run_circuit)
             test_results = TestResult.from_qiskit_result(experiment_results, tomography_result, test_case.circuit)
+            num_assertions = len(test_case.assessor.assertions)
+            corrector = self.corrector_factory.build(test_case.assessor.confidence_level, num_assertions)
             try:
-                test_case.assessor.assess(test_results)
+                test_case.assessor.assess(test_results, corrector)
                 self.printer.print_test_case_success(test_case)
             except Exception as error:
                 self.printer.print_test_case_failure(test_case, error)

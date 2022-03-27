@@ -1,36 +1,29 @@
-from typing import Dict, Tuple, Callable
+from typing import Dict, Tuple, List
 
 from qiskit import QuantumCircuit
 from qiskit.result import Result
 from qiskit_utils import parse_result
 
 from qiskit_check.property_test.resources import Qubit
+from qiskit_check.property_test.utils import amend_instruction_location
 
 
 class TomographyResult:
     def __init__(self) -> None:
         self._estimates_storage = {}
-        self._p_value_calculator_storage = {}
 
-    def add_result(
-            self, estimated_state: Tuple[float, float], qubit: Qubit, location: int,
-            p_value_estimate: Callable[[Tuple[float, float], Tuple[float, float]], float]) -> None:
-        self._safe_insert(self._estimates_storage, qubit, location, estimated_state)
-        self._safe_insert(self._p_value_calculator_storage, qubit, location, p_value_estimate)
-
-    def get_estimate(self, qubit: Qubit, location: int) -> Tuple[float, float]:
-        return self._estimates_storage[qubit][location]
-
-    def get_p_value(self, qubit: Qubit, location: int, expected_state: Tuple[float, float]) -> float:
-        estimated_state = self.get_estimate(qubit, location)
-        return self._p_value_calculator_storage[qubit][location](estimated_state, expected_state)
-
-    @staticmethod
-    def _safe_insert(dictionary: Dict[Qubit, Dict[int, any]], qubit: Qubit, location: int, value: any) -> None:
-        if qubit in dictionary:
-            dictionary[qubit][location] = value
+    def add_result(self, estimated_state: Tuple[float, float, float], qubit: Qubit, location: int) -> None:
+        if qubit in self._estimates_storage:
+            if location in self._estimates_storage[qubit]:
+                self._estimates_storage[qubit][location].append(estimated_state)
+            else:
+                self._estimates_storage[qubit][location] = [estimated_state]
         else:
-            dictionary[qubit] = {location: value}
+            self._estimates_storage[qubit] = {location: [estimated_state]}
+
+    def get_estimates(self, qubit: Qubit, location: int) -> List[Tuple[float, float, float]]:
+        amended_location = amend_instruction_location(location)
+        return self._estimates_storage[qubit][amended_location]
 
 
 class MeasurementResult:

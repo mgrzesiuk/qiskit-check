@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Sequence
+from typing import Dict
 
 from qiskit_check.property_test.property_test_errors import NoExperimentsError
 

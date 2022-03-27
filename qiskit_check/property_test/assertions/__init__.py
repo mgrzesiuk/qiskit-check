@@ -5,3 +5,5 @@ from .assert_entangled import AssertEntangled
 from .assert_measurements import AssertMostProbable, AssertMeasurementEqual
 from .assert_transformed import AssertTransformed
 from .assert_teleported import AssertTeleported
+from .assert_state_equal import AssertStateEqual
+from .assert_state_transformed import AssertStateTransformed

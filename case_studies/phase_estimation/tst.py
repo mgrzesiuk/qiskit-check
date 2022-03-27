@@ -1,5 +1,7 @@
 from abc import ABC
+from math import pi
 from typing import Collection, Sequence, List
+from random import choice
 
 from qiskit import QuantumCircuit
 
@@ -11,6 +13,10 @@ from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
 class AbstractPhaseEstimationPropertyTest(ExampleTestBase, ABC):
+    def __init__(self) -> None:
+        super().__init__()
+        self.phase = choice([pi/4, pi/2, pi])
+
     def get_qubits(self) -> Collection[Qubit]:
         return [
             Qubit(QubitRange(0, 0, 0, 0)),
@@ -20,14 +26,27 @@ class AbstractPhaseEstimationPropertyTest(ExampleTestBase, ABC):
         ]
 
     def assertions(self, qubits: Sequence[Qubit]) -> List[AbstractAssertion]:
-        return [  # check if this works well 001 should be output
-            AssertProbability(self.qubits[0], "1", 1),
-            AssertProbability(self.qubits[1], "0", 1),
-            AssertProbability(self.qubits[2], "0", 1),
-        ]
+        if self.phase == pi / 4:
+            return [
+                AssertProbability(self.qubits[0], "1", 1),
+                AssertProbability(self.qubits[1], "0", 1),
+                AssertProbability(self.qubits[2], "0", 1),
+            ]
+        elif self.phase == pi / 2:
+            return [
+                AssertProbability(self.qubits[0], "0", 1),
+                AssertProbability(self.qubits[1], "1", 1),
+                AssertProbability(self.qubits[2], "0", 1),
+            ]
+        if self.phase == pi:
+            return [
+                AssertProbability(self.qubits[0], "0", 1),
+                AssertProbability(self.qubits[1], "0", 1),
+                AssertProbability(self.qubits[2], "1", 1),
+            ]
 
 
 class PhaseEstimationPropertyTest(AbstractPhaseEstimationPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
-        return phase_estimation(QuantumCircuit(len(self.qubits), 3))
+        return phase_estimation(QuantumCircuit(len(self.qubits), 3), self.phase)

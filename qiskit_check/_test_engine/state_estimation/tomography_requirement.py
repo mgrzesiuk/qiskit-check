@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from qiskit_check.property_test.assertions import AbstractAssertion
+from qiskit_check.property_test.utils import amend_instruction_location
 
 
 class TomographyRequirement:
@@ -13,7 +14,8 @@ class TomographyRequirement:
         for assertion in assertions:
             qubit_requirements = assertion.get_qubits_requiring_tomography()
             for qubit, location in qubit_requirements.items():
+                amended_location = amend_instruction_location(location)  # because initialize is an instruction
                 if qubit in self.qubits_requiring_tomography:
-                    self.qubits_requiring_tomography[qubit].append(location)
+                    self.qubits_requiring_tomography[qubit].append(amended_location)
                 else:
-                    self.qubits_requiring_tomography[qubit] = [location]
+                    self.qubits_requiring_tomography[qubit] = [amended_location]

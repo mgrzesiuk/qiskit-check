@@ -18,6 +18,7 @@ class StateEstimator:
                 "y": self.tomography.get_measure_y(),
                 "z": self.tomography.get_measure_z()
             }
+            self.measurement_names = self.tomography.get_measurement_names()
 
     def run(
             self, test_case: TestCase,
@@ -52,16 +53,17 @@ class StateEstimator:
                 if len(qubits_requiring_tomography[qubit]) == 0:
                     qubits_requiring_tomography.pop(qubit)
             # run circuit
-            results = {}
-            for axis, circuit in circuits.items():
-                results[axis] = parse_result(run_circuit(circuit, test_case.num_measurements), circuit)
-            # parse results
-            parsed_results = self._parse_results(results)
-
-            for qubit, location in circuit_specification.items():
-                qubit_index = test_case.assessor.resource_matcher[qubit].qubit_index
-                estimated_state = self.tomography.estimate_state(parsed_results[qubit_index])
-                tomography_result.add_result(estimated_state, qubit, location, self.tomography.calculate_p_value)
+            for _ in range(test_case.num_experiments):
+                experiment_results = {}
+                for axis, circuit in circuits.items():
+                    experiment_results[axis] = parse_result(run_circuit(circuit, test_case.num_measurements),
+                                                            circuit, measurement_names=self.measurement_names)
+                # parse results
+                parsed_results = self._parse_results(experiment_results)
+                for qubit, location in circuit_specification.items():
+                    qubit_index = test_case.assessor.resource_matcher[qubit].qubit_index
+                    estimated_state = self.tomography.estimate_state(parsed_results[qubit_index])
+                    tomography_result.add_result(estimated_state, qubit, location)
 
         return tomography_result
 

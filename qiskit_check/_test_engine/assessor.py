@@ -1,5 +1,6 @@
 from typing import Dict, Sequence
 
+from qiskit_check._test_engine.p_value_correction import AbstractCorrection
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.property_test import PropertyTest
 from qiskit_check.property_test.property_test_errors import IncorrectAssertionError
@@ -17,10 +18,11 @@ class Assessor:
         self.confidence_level = confidence_level
         self.tomography_requirement = tomography_requirement
 
-    def assess(self, experiment_results: TestResult) -> None:
+    def assess(self, experiment_results: TestResult, corrector: AbstractCorrection) -> None:
         for assertion in self.assertions:
             p_value = assertion.get_p_value(experiment_results, self.resource_matcher)
-            assertion.verify(self.confidence_level, p_value)
+            confidence_level = corrector.get_corrected_confidence_leven()
+            assertion.verify(confidence_level, p_value)
 
 
 class AssessorFactory:
