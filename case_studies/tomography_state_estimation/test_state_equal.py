@@ -37,7 +37,7 @@ class H0StateEqualPropertyTest(ExampleTestBase):
         return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 1, (pi/2, pi))
+        return AssertStateEqual(qubits[0], 1, (pi/2, 0))
 
 
 class H1StateEqualPropertyTest(ExampleTestBase):
