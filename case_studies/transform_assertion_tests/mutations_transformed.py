@@ -52,5 +52,5 @@ class MutationHSingleGateTransformedPropertyTest(ExampleTestBase):
         return [Qubit(AnyRange())]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertTransformed(qubits[0], Rotation.from_euler("XY", [pi, pi/2]))
+        return AssertTransformed(qubits[0], Rotation.from_euler("XY", [pi/2, pi]))
 

@@ -17,6 +17,10 @@ class AbstractTeleportationProperty(ExampleTestBase, ABC):
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertTeleported(qubits[0], qubits[2])
 
+    @staticmethod
+    def num_test_cases() -> int:
+        return 10
+
 
 class TeleportationProperty(AbstractTeleportationProperty):
     @property
