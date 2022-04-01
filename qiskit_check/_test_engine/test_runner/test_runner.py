@@ -5,6 +5,7 @@ from qiskit.result import Result
 from qiskit.tools.monitor import job_monitor
 
 from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest, TestCase
+from qiskit_check._test_engine.p_value_correction import NoCorrectionFactory, AbstractCorrectionFactory
 from qiskit_check._test_engine.printers import AbstractPrinter
 from qiskit_check._test_engine.state_estimation.tomography import AbstractTomography
 from qiskit_check._test_engine.test_runner.abstract_test_runner import AbstractTestRunner
@@ -36,8 +37,10 @@ class TestRunner(AbstractTestRunner, ABC):
 
 
 class SimulatorTestRunner(TestRunner):
-    def __init__(self, simulator_name: str, printer: AbstractPrinter, tomography: AbstractTomography = None) -> None:
-        super().__init__(printer, tomography)
+    def __init__(
+            self, simulator_name: str, printer: AbstractPrinter, tomography: AbstractTomography = None,
+            corrector_factory: AbstractCorrectionFactory = NoCorrectionFactory()) -> None:
+        super().__init__(printer, tomography, corrector_factory)
         self.backend = Aer.get_backend(simulator_name)
 
     def _run_circuit(self, circuit: QuantumCircuit, num_shots: int) -> Result:
@@ -48,8 +51,9 @@ class SimulatorTestRunner(TestRunner):
 class IBMQDeviceRunner(TestRunner):
     def __init__(
             self, backend_name: str, provider_hub: str, provider_group: str, provider_project: str,
-            printer: AbstractPrinter, tomography: AbstractTomography = None) -> None:
-        super().__init__(printer, tomography)
+            printer: AbstractPrinter, tomography: AbstractTomography = None,
+            corrector_factory: AbstractCorrectionFactory = NoCorrectionFactory()) -> None:
+        super().__init__(printer, tomography, corrector_factory)
         IBMQ.load_account()
         provider = IBMQ.get_provider(hub=provider_hub, group=provider_group, project=provider_project)
         self.backend = provider.get_backend(backend_name)

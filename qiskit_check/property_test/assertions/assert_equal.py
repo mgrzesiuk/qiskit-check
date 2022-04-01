@@ -9,7 +9,7 @@ from qiskit_check.property_test.test_results import TestResult
 
 
 class AssertEqual(AbstractAssertion):
-    def __init__(self, qubit_0: Qubit, qubit_1: Qubit, ideal: bool) -> None:
+    def __init__(self, qubit_0: Qubit, qubit_1: Qubit, ideal: bool = False) -> None:
         self.qubit_0 = qubit_0
         self.qubit_1 = qubit_1
         self.test = ttest_ind if ideal else ttest_rel
@@ -19,7 +19,7 @@ class AssertEqual(AbstractAssertion):
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
 
         self.check_if_experiments_empty(result)
-        # TODO: this doesn't exactly check if qubits have equal states, it checks if probabilities are same,but not -|1>
+
         qubit_0_index = resource_matcher[self.qubit_0].qubit_index
         qubit_1_index = resource_matcher[self.qubit_1].qubit_index
 

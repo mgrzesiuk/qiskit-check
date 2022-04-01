@@ -1,6 +1,6 @@
 from qiskit import QuantumCircuit
 
-from case_studies.entanglement.tst import AbstractEntanglePropertyTest
+from e2e_test.entangled_assertion_test.tst import AbstractEntanglePropertyTest
 
 
 class MutationNoHEntanglePropertyTest(AbstractEntanglePropertyTest):

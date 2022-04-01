@@ -3,12 +3,12 @@ from typing import Collection, Sequence
 
 from qiskit import QuantumCircuit
 
-from case_studies.example_test_base import ExampleTestBase
+from e2e_test.test_base import TestBase
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertEntangled
 from qiskit_check.property_test.resources import Qubit, QubitRange
 
 
-class AbstractEntanglePropertyTest(ExampleTestBase, ABC):
+class AbstractEntanglePropertyTest(TestBase, ABC):
     def get_qubits(self) -> Collection[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(2)]
 

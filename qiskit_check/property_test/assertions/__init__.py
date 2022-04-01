@@ -7,3 +7,4 @@ from .assert_transformed import AssertTransformed
 from .assert_teleported import AssertTeleported
 from .assert_state_equal import AssertStateEqual
 from .assert_state_transformed import AssertStateTransformed
+from .assert_equal import AssertEqual

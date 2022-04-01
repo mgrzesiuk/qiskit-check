@@ -4,12 +4,12 @@ from typing import Sequence
 from qiskit import QuantumCircuit
 from scipy.spatial.transform import Rotation
 
-from case_studies.example_test_base import ExampleTestBase
+from e2e_test.test_base import TestBase
 from qiskit_check.property_test.assertions import AssertTransformed, AbstractAssertion
 from qiskit_check.property_test.resources import Qubit, AnyRange
 
 
-class SSingleGateTransformedPropertyTest(ExampleTestBase):
+class SSingleGateTransformedPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -24,7 +24,7 @@ class SSingleGateTransformedPropertyTest(ExampleTestBase):
         return AssertTransformed(qubits[0], Rotation.from_euler("Z", [pi/2]))
 
 
-class XSingleGateTransformedPropertyTest(ExampleTestBase):
+class XSingleGateTransformedPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -39,7 +39,7 @@ class XSingleGateTransformedPropertyTest(ExampleTestBase):
         return AssertTransformed(qubits[0], Rotation.from_euler("X", [pi]))
 
 
-class HSingleGateTransformedPropertyTest(ExampleTestBase):
+class HSingleGateTransformedPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)

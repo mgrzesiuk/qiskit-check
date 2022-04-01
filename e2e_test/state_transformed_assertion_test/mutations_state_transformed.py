@@ -4,13 +4,13 @@ from typing import Sequence, List
 from qiskit import QuantumCircuit
 from scipy.spatial.transform import Rotation
 
-from case_studies.example_test_base import ExampleTestBase
+from e2e_test.test_base import TestBase
 from qiskit_check.property_test.assertions import AbstractAssertion
-from qiskit_check.property_test.assertions import AssertStateTransformed, AssertStateEqual
-from qiskit_check.property_test.resources import Qubit, AnyRange, QubitRange
+from qiskit_check.property_test.assertions import AssertStateTransformed
+from qiskit_check.property_test.resources import Qubit, AnyRange
 
 
-class MutationSingleGateStateTransformedPropertyTest(ExampleTestBase):
+class MutationSingleGateStateTransformedPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -26,7 +26,7 @@ class MutationSingleGateStateTransformedPropertyTest(ExampleTestBase):
         return AssertStateTransformed(qubits[0], 1, Rotation.from_euler("X", [pi]))
 
 
-class MutationSSingleGateStateTransformedPropertyTest(ExampleTestBase):
+class MutationSSingleGateStateTransformedPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -41,7 +41,7 @@ class MutationSSingleGateStateTransformedPropertyTest(ExampleTestBase):
         return AssertStateTransformed(qubits[0], 1, Rotation.from_euler("Z", [pi/2]))
 
 
-class MutationHSingleGateStateTransformedPropertyTest(ExampleTestBase):
+class MutationHSingleGateStateTransformedPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -55,7 +55,7 @@ class MutationHSingleGateStateTransformedPropertyTest(ExampleTestBase):
         return AssertStateTransformed(qubits[0], 0, Rotation.from_euler("XY", [pi, pi/2]))
 
 
-class MutationMultipleGateStateTransformedPropertyTest(ExampleTestBase):
+class MutationMultipleGateStateTransformedPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)

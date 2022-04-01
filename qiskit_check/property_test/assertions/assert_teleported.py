@@ -16,7 +16,6 @@ class AssertTeleported(AbstractAssertion):
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
 
         self.check_if_experiments_empty(result)
-        # TODO: this checks if prob check out but not if the qubit got teleported (maybe since -|0> != |0> but here they are)
         expected_ground_state_probability = resource_matcher[self.qubit_to_teleport].value.probabilities()[0]
         assert_probability = AssertProbability(self.target_qubit, "0", expected_ground_state_probability)
         return assert_probability.get_p_value(result, resource_matcher)

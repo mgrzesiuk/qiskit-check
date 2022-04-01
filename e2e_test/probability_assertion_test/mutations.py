@@ -1,16 +1,15 @@
-from math import pi
 from typing import Sequence
 
 from qiskit import QuantumCircuit
 
-from case_studies.example_test_base import ExampleTestBase
+from e2e_test.test_base import TestBase
 from qiskit_check.property_test.assertions import AbstractAssertion
-from qiskit_check.property_test.assertions import AssertStateEqual
+from qiskit_check.property_test.assertions import AssertProbability
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
-class MutationXStateEqualPropertyTest(ExampleTestBase):
+class MutationXProbabilityPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -21,13 +20,14 @@ class MutationXStateEqualPropertyTest(ExampleTestBase):
         return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 0, (pi, 0))
+        return AssertProbability(qubits[0], "1", 1)
 
 
-class MutationH0StateEqualPropertyTest(ExampleTestBase):
+class MutationSProbabilityPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
+        qc.x(0)
         qc.s(0)
         qc.measure_all()
         return qc
@@ -36,30 +36,14 @@ class MutationH0StateEqualPropertyTest(ExampleTestBase):
         return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 1, (pi/2, pi))
+        return AssertProbability(qubits[0], "0", 1)
 
 
-class MutationH1StateEqualPropertyTest(ExampleTestBase):
+class MutationHProbabilityPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
-        qc.s(0)
-        qc.measure_all()
-        return qc
-
-    def get_qubits(self) -> Sequence[Qubit]:
-        return [Qubit(QubitRange(pi, 0, pi, 0))]
-
-    def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 1, (pi/2, pi))
-
-
-class MutationS0StateEqualPropertyTest(ExampleTestBase):
-    @property
-    def circuit(self) -> QuantumCircuit:
-        qc = QuantumCircuit(1)
-        qc.s(0)
-        qc.h(0)
+        qc.x(0)
         qc.measure_all()
         return qc
 
@@ -67,20 +51,35 @@ class MutationS0StateEqualPropertyTest(ExampleTestBase):
         return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 2, (0, pi/2))
+        return AssertProbability(qubits[0], "1", 1/2)
 
 
-class MutationS1StateEqualPropertyTest(ExampleTestBase):
+class MutationXTProbabilityPropertyTest(TestBase):
     @property
     def circuit(self) -> QuantumCircuit:
-        qc = QuantumCircuit(1)
-        qc.s(0)
-        qc.h(0)
+        qc = QuantumCircuit(2)
+        qc.t(0)
         qc.measure_all()
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:
-        return [Qubit(QubitRange(pi, 0, pi, 0))]
+        return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 2, (pi, pi/2))
+        return AssertProbability(qubits[0], "0", 0)
+
+
+class MutationXHProbabilityPropertyTest(TestBase):
+    @property
+    def circuit(self) -> QuantumCircuit:
+        qc = QuantumCircuit(1)
+        qc.x(0)
+        qc.measure_all()
+        return qc
+
+    def get_qubits(self) -> Sequence[Qubit]:
+        return [Qubit(QubitRange(0, 0, 0, 0))]
+
+    def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
+        return AssertProbability(qubits[0], "1", 1/2)
+
