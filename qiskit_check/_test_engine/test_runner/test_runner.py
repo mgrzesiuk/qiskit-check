@@ -49,6 +49,7 @@ class SimulatorTestRunner(TestRunner):
 
 
 class IBMQDeviceRunner(TestRunner):
+    # TODO: test this on small example
     def __init__(
             self, backend_name: str, provider_hub: str, provider_group: str, provider_project: str,
             printer: AbstractPrinter, tomography: AbstractTomography = None,
