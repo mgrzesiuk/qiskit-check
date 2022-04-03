@@ -4,13 +4,13 @@ from typing import Sequence, List
 from qiskit import QuantumCircuit
 from scipy.spatial.transform import Rotation
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.assertions import AssertStateTransformed
 from qiskit_check.property_test.resources import Qubit, AnyRange
 
 
-class MutationSingleGateStateTransformedPropertyTest(TestBase):
+class MutationSingleGateStateTransformedPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -26,7 +26,7 @@ class MutationSingleGateStateTransformedPropertyTest(TestBase):
         return AssertStateTransformed(qubits[0], 1, Rotation.from_euler("X", [pi]))
 
 
-class MutationSSingleGateStateTransformedPropertyTest(TestBase):
+class MutationSSingleGateStateTransformedPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -41,7 +41,7 @@ class MutationSSingleGateStateTransformedPropertyTest(TestBase):
         return AssertStateTransformed(qubits[0], 1, Rotation.from_euler("Z", [pi/2]))
 
 
-class MutationHSingleGateStateTransformedPropertyTest(TestBase):
+class MutationHSingleGateStateTransformedPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -55,7 +55,7 @@ class MutationHSingleGateStateTransformedPropertyTest(TestBase):
         return AssertStateTransformed(qubits[0], 0, Rotation.from_euler("XY", [pi, pi/2]))
 
 
-class MutationMultipleGateStateTransformedPropertyTest(TestBase):
+class MutationMultipleGateStateTransformedPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)

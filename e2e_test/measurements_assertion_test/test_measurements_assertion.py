@@ -2,13 +2,13 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit, ClassicalRegister
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertMeasurementEqual, AssertMostProbable
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
-class XMeasurementPropertyTest(TestBase):
+class XMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -23,7 +23,7 @@ class XMeasurementPropertyTest(TestBase):
         return [AssertMeasurementEqual("1"), AssertMostProbable("1")]
 
 
-class SMeasurementPropertyTest(TestBase):
+class SMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -38,7 +38,7 @@ class SMeasurementPropertyTest(TestBase):
         return [AssertMeasurementEqual("00"), AssertMostProbable("00")]
 
 
-class XTMeasurementPropertyTest(TestBase):
+class XTMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -54,7 +54,7 @@ class XTMeasurementPropertyTest(TestBase):
         return [AssertMeasurementEqual("1"), AssertMostProbable("1")]
 
 
-class MultipleRegistersMeasurementPropertyTest(TestBase):
+class MultipleRegistersMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         creg1 = ClassicalRegister(1)

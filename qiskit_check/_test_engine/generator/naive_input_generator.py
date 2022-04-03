@@ -9,8 +9,21 @@ from qiskit_check.property_test.utils import hopf_coordinates_to_vector_state
 
 
 class NaiveInputGenerator(IndependentInputGenerator):
+    """
+    generate inputs naively (both theta and phi are selected uniformly) this leads to more data being generated
+    near north and south poles of the bloch sphere
+    """
     @staticmethod
     def _generate_single_value(qubit: Qubit) -> Statevector:
+        """
+        generate initial state for qubits
+        Args:
+            qubits: sequence of qubits for which to generate initial values
+
+        Returns: sequence of qiskit Statevectors which are to be initial values for qubits (respectively to position
+        of qubits in the input sequence)
+
+        """
         theta = uniform(qubit.values.theta_start, qubit.values.theta_end)
         phi = uniform(qubit.values.phi_start, qubit.values.phi_end)
         ground_state_amp, excited_state_amp = hopf_coordinates_to_vector_state(theta, phi)
@@ -18,5 +31,13 @@ class NaiveInputGenerator(IndependentInputGenerator):
 
 
 class NaiveInputGeneratorFactory(QubitInputGeneratorFactory):
+    """
+    class for creating NaiveInputGenerator objects
+    """
     def build(self) -> QubitInputGenerator:
+        """
+        create NaiveInputGenerator object
+        Returns: NaiveInputGenerator object
+
+        """
         return NaiveInputGenerator()

@@ -2,14 +2,14 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.assertions import AssertProbability
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
-class MutationXProbabilityPropertyTest(TestBase):
+class MutationXProbabilityPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -23,7 +23,7 @@ class MutationXProbabilityPropertyTest(TestBase):
         return AssertProbability(qubits[0], "1", 1)
 
 
-class MutationSProbabilityPropertyTest(TestBase):
+class MutationSProbabilityPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -39,7 +39,7 @@ class MutationSProbabilityPropertyTest(TestBase):
         return AssertProbability(qubits[0], "0", 1)
 
 
-class MutationHProbabilityPropertyTest(TestBase):
+class MutationHProbabilityPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -54,7 +54,7 @@ class MutationHProbabilityPropertyTest(TestBase):
         return AssertProbability(qubits[0], "1", 1/2)
 
 
-class MutationXTProbabilityPropertyTest(TestBase):
+class MutationXTProbabilityPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -69,7 +69,7 @@ class MutationXTProbabilityPropertyTest(TestBase):
         return AssertProbability(qubits[0], "0", 0)
 
 
-class MutationXHProbabilityPropertyTest(TestBase):
+class MutationXHProbabilityPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)

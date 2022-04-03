@@ -4,14 +4,14 @@ from typing import Sequence, Dict
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import QFT
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 from qiskit_check.property_test.test_results import MeasurementResult
 
 
-class MutationXEqualTruePropertyTest(TestBase):
+class MutationXEqualTruePropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -33,7 +33,7 @@ class MutationXEqualTruePropertyTest(TestBase):
         return difference
 
 
-class MutationHEqualTruePropertyTest(TestBase):
+class MutationHEqualTruePropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -56,7 +56,7 @@ class MutationHEqualTruePropertyTest(TestBase):
         return difference
 
 
-class MutationQPETruePropertyTest(TestBase):
+class MutationQPETruePropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         circuit = QuantumCircuit(4, 3)

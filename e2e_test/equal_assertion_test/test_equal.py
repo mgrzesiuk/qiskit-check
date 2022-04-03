@@ -3,14 +3,14 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.assertions import AssertEqual
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
-class AbstractEqualPropertyTest(TestBase, ABC):
+class AbstractEqualPropertyPropertyTest(BasePropertyTest, ABC):
     def get_qubits(self) -> Sequence[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 
@@ -18,7 +18,7 @@ class AbstractEqualPropertyTest(TestBase, ABC):
         return AssertEqual(qubits[0], qubits[1])
 
 
-class XEqualPropertyTest(AbstractEqualPropertyTest):
+class XEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -28,7 +28,7 @@ class XEqualPropertyTest(AbstractEqualPropertyTest):
         return qc
 
 
-class HEqualPropertyTest(AbstractEqualPropertyTest):
+class HEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -38,7 +38,7 @@ class HEqualPropertyTest(AbstractEqualPropertyTest):
         return qc
 
 
-class SEqualPropertyTest(AbstractEqualPropertyTest):
+class SEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -50,7 +50,7 @@ class SEqualPropertyTest(AbstractEqualPropertyTest):
         return qc
 
 
-class DoubleHEqualPropertyTest(AbstractEqualPropertyTest):
+class DoubleHEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)

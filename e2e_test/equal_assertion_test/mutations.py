@@ -1,9 +1,9 @@
 from qiskit import QuantumCircuit
 
-from e2e_test.equal_assertion_test.test_equal import AbstractEqualPropertyTest
+from e2e_test.equal_assertion_test.test_equal import AbstractEqualPropertyPropertyTest
 
 
-class MutationXSEqualPropertyTest(AbstractEqualPropertyTest):
+class MutationXSEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -12,7 +12,7 @@ class MutationXSEqualPropertyTest(AbstractEqualPropertyTest):
         return qc
 
 
-class MutationHEqualPropertyTest(AbstractEqualPropertyTest):
+class MutationHEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -21,7 +21,7 @@ class MutationHEqualPropertyTest(AbstractEqualPropertyTest):
         return qc
 
 
-class MutationSEqualPropertyTest(AbstractEqualPropertyTest):
+class MutationSEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -31,7 +31,7 @@ class MutationSEqualPropertyTest(AbstractEqualPropertyTest):
         return qc
 
 
-class MutationDoubleHEqualPropertyTest(AbstractEqualPropertyTest):
+class MutationDoubleHEqualPropertyTest(AbstractEqualPropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)

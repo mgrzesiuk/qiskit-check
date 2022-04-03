@@ -7,7 +7,7 @@ class AbstractCorrection(ABC):
         self.num_assertions = num_assertions
 
     @abstractmethod
-    def get_corrected_confidence_leven(self) -> float:
+    def get_corrected_confidence_level(self) -> float:
         pass
 
 

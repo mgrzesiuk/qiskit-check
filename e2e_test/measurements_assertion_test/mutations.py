@@ -2,13 +2,13 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit, ClassicalRegister
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertMeasurementEqual, AssertMostProbable
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
-class MutationXMeasurementPropertyTest(TestBase):
+class MutationXMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -22,7 +22,7 @@ class MutationXMeasurementPropertyTest(TestBase):
         return [AssertMeasurementEqual("1"), AssertMostProbable("1")]
 
 
-class MutationSMeasurementPropertyTest(TestBase):
+class MutationSMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -37,7 +37,7 @@ class MutationSMeasurementPropertyTest(TestBase):
         return [AssertMeasurementEqual("0"), AssertMostProbable("0")]
 
 
-class MutationXTMeasurementPropertyTest(TestBase):
+class MutationXTMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -52,7 +52,7 @@ class MutationXTMeasurementPropertyTest(TestBase):
         return [AssertMeasurementEqual("1"), AssertMostProbable("1")]
 
 
-class MutationMultipleRegistersMeasurementPropertyTest(TestBase):
+class MutationMultipleRegistersMeasurementPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         creg1 = ClassicalRegister(1)

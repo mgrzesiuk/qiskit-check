@@ -3,14 +3,14 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.assertions import AssertStateEqual
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
 
-class XStateEqualPropertyTest(TestBase):
+class XStateEqualPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -25,7 +25,7 @@ class XStateEqualPropertyTest(TestBase):
         return AssertStateEqual(qubits[0], 1, (pi, 0))
 
 
-class H0StateEqualPropertyTest(TestBase):
+class H0StateEqualPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -40,7 +40,7 @@ class H0StateEqualPropertyTest(TestBase):
         return AssertStateEqual(qubits[0], 1, (pi/2, 0))
 
 
-class H1StateEqualPropertyTest(TestBase):
+class H1StateEqualPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -55,7 +55,7 @@ class H1StateEqualPropertyTest(TestBase):
         return AssertStateEqual(qubits[0], 1, (pi/2, pi))
 
 
-class S0StateEqualPropertyTest(TestBase):
+class S0StateEqualPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
@@ -70,7 +70,7 @@ class S0StateEqualPropertyTest(TestBase):
         return AssertStateEqual(qubits[0], 1, (0, pi/2))
 
 
-class S1StateEqualPropertyTest(TestBase):
+class S1StateEqualPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)

@@ -3,7 +3,7 @@ from qiskit_check._test_engine.p_value_correction.abstract_correction import Abs
 
 
 class NoCorrection(AbstractCorrection):
-    def get_corrected_confidence_leven(self) -> float:
+    def get_corrected_confidence_level(self) -> float:
         return self.familywise_p_value
 
 

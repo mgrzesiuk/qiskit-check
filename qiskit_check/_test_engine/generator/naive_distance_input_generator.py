@@ -11,12 +11,33 @@ from qiskit_check.property_test.utils import vector_state_to_hopf_coordinates
 
 
 class NaiveDistanceInputGenerator(QubitInputGenerator):
-    def __init__(self, single_qubit_generator_factory: QubitInputGeneratorFactory, quantization_rate: float) -> None:
+    """
+    class for generating qubits in such way that qubits further away from already generated qubits (distance measured
+     between qubits generated from the same template - for one qubit in quantum circuit) is more likely to be generated
+    """
+    def __init__(self, single_qubit_generator_factory: QubitInputGeneratorFactory, quantization_rate: int) -> None:
+        """
+        initialize
+        Args:
+            single_qubit_generator_factory: qubit input generator for one qubit, used when all states are equally likely
+            (when no qubits were generated or when generating in a one of the buckets that was created during
+            quantization of the bloch sphere)
+            quantization_rate: positive integer to specify how many buckets to separate bloch sphere into
+        """
         self.specific_generators = []
         self.uniform_generator = single_qubit_generator_factory.build()
         self.quantization_rate = quantization_rate
 
     def generate(self, qubits: Sequence[Qubit]) -> List[Statevector]:
+        """
+        generate initial state for qubits
+        Args:
+            qubits: sequence of qubits for which to generate initial values
+
+        Returns: sequence of qiskit Statevectors which are to be initial values for qubits (respectively to position
+        of qubits in the input sequence)
+
+        """
         if len(self.specific_generators) == 0:
             return self._generate_first_time(qubits)
         generated_qubits = []
@@ -29,11 +50,28 @@ class NaiveDistanceInputGenerator(QubitInputGenerator):
         return generated_qubits
 
     def _generate_first_time(self, qubits: Sequence[Qubit]) -> List[Statevector]:
+        """
+        generate qubits for the first time with use of qubit generator specified in the constructor
+        Args:
+            qubits: qubits to generate
+
+        Returns: list of state vectors with initial values of qubits
+
+        """
         generated_qubits = self.uniform_generator.generate(qubits)
         self._initialize_specific_generators(qubits, generated_qubits)
         return generated_qubits
 
     def _initialize_specific_generators(self, qubits: Sequence[Qubit], generated_qubits: List[Statevector]) -> None:
+        """
+        initialize distance generators for each qubit template
+        Args:
+            qubits: qubit templates for which to initialize distance generators
+            generated_qubits: list of first values generated (with generator from constructor)
+
+        Returns: None
+
+        """
         for generated_qubit, template_qubit in zip(generated_qubits, qubits):
             hopf_coordinates_qubit = vector_state_to_hopf_coordinates(*generated_qubit.data)
             specific_generator = NaiveDistanceSingleInputGenerator(template_qubit, hopf_coordinates_qubit,
@@ -42,9 +80,21 @@ class NaiveDistanceInputGenerator(QubitInputGenerator):
 
 
 class NaiveDistanceSingleInputGenerator:
+    """
+    generator to generate qubits based on distance to all previously generated qubits
+    """
     def __init__(
             self, qubit: Qubit, initial_generation: Tuple[float, float],
             quantization_rate: float, uniform_generator:  QubitInputGenerator) -> None:
+        """
+        initialize
+        Args:
+            qubit: qubit template for this distance generator
+            initial_generation: first state that was generated for this qubit template
+            quantization_rate: positive integer to specify how many buckets to separate bloch sphere into
+            uniform_generator: qubit input generator for one qubit, used when all states are equally likely
+            (when generating in a one of the buckets that was created during quantization of the bloch sphere)
+        """
         self.qubit = qubit
         self.quantization_rate = quantization_rate
         self.uniform_generator = uniform_generator
@@ -52,6 +102,11 @@ class NaiveDistanceSingleInputGenerator:
         self.buckets, self.weights, self.weights_sum = self._get_buckets(qubit)
 
     def generate(self) -> Statevector:
+        """
+        generate initial state for qubit template based on previously generated values
+        Returns: initial qubit state
+
+        """
         bucket_probabilities = self._get_normalized_weights()
         chosen_bucket_index = choice(len(self.buckets), p=bucket_probabilities)
         chosen_bucket = self.buckets[chosen_bucket_index]
@@ -70,6 +125,17 @@ class NaiveDistanceSingleInputGenerator:
         return generated_qubit
 
     def _get_buckets(self, qubit: Qubit) -> Tuple[List[Tuple[float, float]], ndarray, float]:
+        """
+        split bloch sphere into multiple "buckets"
+        Args:
+            qubit: qubit template for which this generator is aimed
+
+        Returns:
+            list of buckets
+            array of weights of the buckets (distance to the closest already generated qubit)
+            sum of weights
+
+        """
         buckets = []
         weights = []
         weights_sum = 0
@@ -91,6 +157,14 @@ class NaiveDistanceSingleInputGenerator:
         return buckets, asarray(weights, dtype=longdouble), weights_sum
 
     def _get_minimal_spherical_distance(self, bucket: Tuple[float, float]) -> float:
+        """
+        calculate the smallest squared spherical distance between bucket and already generated initial states
+        Args:
+            bucket: bucket for which to calculate spherical distance
+
+        Returns: smallest spherical distance between bucket and already generated initial states
+
+        """
         minimal_distance = float('inf')
         bloch_vector_of_bucket = self._get_bloch_vector(*bucket)
         for point in self.previously_generated:
@@ -101,6 +175,14 @@ class NaiveDistanceSingleInputGenerator:
         return minimal_distance
 
     def _add_record_new_qubit(self, generated_qubit: Statevector) -> None:
+        """
+        store newly generated initial state
+        Args:
+            generated_qubit: newly generated initial state
+
+        Returns: None
+
+        """
         generated_point = self._get_bloch_vector(*vector_state_to_hopf_coordinates(*generated_qubit.data))
         for i in range(len(self.weights)):
             bucket = self._get_bloch_vector(*self.buckets[i])
@@ -110,22 +192,61 @@ class NaiveDistanceSingleInputGenerator:
                 self.weights[i] = distance
 
     def _get_normalized_weights(self) -> ndarray:
+        """
+        get array of weights that sums to 1
+        Returns: array of weights (self.weights) but normalized (sums to 1)
+
+        """
         return self.weights / self.weights_sum
 
     @staticmethod
     def _get_spherical_distance_squared(tested_point: ndarray, stored_point: ndarray) -> float:
+        """
+        get squared spherical distance between 2 points on bloch sphere
+        Args:
+            tested_point: bloch vector of 1st point
+            stored_point: bloch vector of 1st point
+
+        Returns: spherical distance between tested_point and stored_point
+
+        """
         return arccos(dot(tested_point, stored_point))**2
 
     @staticmethod
     def _get_bloch_vector(theta: float, phi: float) -> ndarray:
+        """
+        calculate bloch vector from hopf coordinates
+        Args:
+            theta:
+            phi:
+
+        Returns: 3 dimensional bloch vector
+
+        """
         return asarray([cos(phi)*sin(theta), sin(phi)*sin(theta), cos(theta)])
 
 
 class NaiveDistanceInputGeneratorFactory(QubitInputGeneratorFactory):
+    """
+    factory to create NaiveDistanceInputGenerator objects
+    """
     def __init__(
             self, single_qubit_generator_factory: QubitInputGeneratorFactory, quantization_rate: float = 1000) -> None:
+        """
+        initialize
+        Args:
+            single_qubit_generator_factory: qubit input generator for one qubit, used when all states are equally likely
+            (when no qubits were generated or when generating in a one of the buckets that was created during
+            quantization of the bloch sphere)
+            quantization_rate: positive integer to specify how many buckets to separate bloch sphere into
+        """
         self.single_qubit_generator_factory = single_qubit_generator_factory
         self.quantization_rate = quantization_rate
 
     def build(self) -> NaiveDistanceInputGenerator:
+        """
+        build new NaiveDistanceInputGenerator object
+        Returns: NaiveDistanceInputGenerator object
+
+        """
         return NaiveDistanceInputGenerator(self.single_qubit_generator_factory, self.quantization_rate)

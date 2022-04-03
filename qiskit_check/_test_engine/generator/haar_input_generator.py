@@ -20,8 +20,20 @@ https://reader.elsevier.com/reader/sd/pii/S0047259X05000382?token=198945D6C08736
 
 
 class HaarInputGenerator(IndependentInputGenerator):
+    """
+    generate inputs uniformly according to haar measure
+    """
     @staticmethod
     def _generate_single_value(qubit: Qubit) -> Statevector:
+        """
+        generate initial state for qubits
+        Args:
+            qubits: sequence of qubits for which to generate initial values
+
+        Returns: sequence of qiskit Statevectors which are to be initial values for qubits (respectively to position
+        of qubits in the input sequence)
+
+        """
         unif_lower_bound = sin(qubit.values.theta_start/2)**2
         unif_upper_band = sin(qubit.values.theta_end/2)**2
 
@@ -33,5 +45,13 @@ class HaarInputGenerator(IndependentInputGenerator):
 
 
 class HaarInputGeneratorFactory(QubitInputGeneratorFactory):
+    """
+    class for creating HaarInputGenerator objects
+    """
     def build(self) -> QubitInputGenerator:
+        """
+        create HaarInputGenerator object
+        Returns: HaarInputGenerator object
+
+        """
         return HaarInputGenerator()

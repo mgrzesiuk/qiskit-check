@@ -12,12 +12,33 @@ from qiskit_check.property_test.property_test import PropertyTest
 
 
 class Collector:
+    """
+    class for collecting property test classes
+    """
     def collect(self, path: str) -> Set[Type[PropertyTest]]:
+        """
+        collect property test classes that inherit from PropertyTest class
+        from given destination, property tests must be uniquely named (even if in different files)
+        Args:
+            path: path to file or directory where/under which property tests are located
+
+        Returns: set of property test class objects found from given destination
+
+        """
         self._import_all_modules_from_directory(path)
         test_classes, _ = self._get_all_test_classes(PropertyTest, set())
         return test_classes
 
     def _get_all_test_classes(self, cls: Type[PropertyTest], seen: Set[str]) -> Tuple[Set[Type[PropertyTest]], Set[str]]:
+        """
+        return all test classes that inherit from cls
+        Args:
+            cls: class of subtype PropertyTest (or PropertyTest class) which subclasses to collect
+            seen: set of seen names of the test classes, for recurrence
+
+        Returns: set of property test classes and a set of seen test class names
+
+        """
         subclasses = set()
         for subclass in cls.__subclasses__():
             subclass_name = subclass.__name__
@@ -33,6 +54,14 @@ class Collector:
 
     @staticmethod
     def _import_all_modules_from_directory(path: str) -> None:
+        """
+        import all modules from directory or file
+        Args:
+            path: path to directory or file from which to collect test modules
+
+        Returns: None
+
+        """
         if os.path.isfile(path):
             module_name = Path(path).name
             Collector._import_file(path, Collector._get_global_name(module_name))
@@ -48,11 +77,30 @@ class Collector:
 
     @staticmethod
     def _get_global_name(module_name: str) -> str:
+        """
+        generate a unique name for a module (module name + uuid)
+        Args:
+            module_name: name of the module for which to generate the name
+
+        Returns: unique name for the module
+
+        """
         return module_name + uuid4().__str__()
 
-    # code by Stefan Scherfke published on https://stackoverflow.com/questions/19009932/import-arbitrary-python-source-file-python-3-3/41595552#41595552
     @staticmethod
     def _import_file(module_path: str, global_name: str) -> None:
+        """
+        import file at a module_path and set its global name name to global_name
+
+        code by Stefan Scherfke published on
+        https://stackoverflow.com/questions/19009932/import-arbitrary-python-source-file-python-3-3/41595552#41595552
+        Args:
+            module_path: path to the module to import
+            global_name: globala_name for the module
+
+        Returns: None
+
+        """
         spec = spec_from_file_location(global_name, module_path)
         module = module_from_spec(spec)
         sys.modules[global_name] = module

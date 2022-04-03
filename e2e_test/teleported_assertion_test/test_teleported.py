@@ -3,13 +3,13 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 
-from e2e_test.test_base import TestBase
+from e2e_test.test_base import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTeleported
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange, AnyRange
 
 
-class AbstractTeleportationProperty(TestBase, ABC):
+class AbstractTeleportationProperty(BasePropertyTest, ABC):
     def get_qubits(self) -> Sequence[Qubit]:
         return [Qubit(AnyRange()), Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 

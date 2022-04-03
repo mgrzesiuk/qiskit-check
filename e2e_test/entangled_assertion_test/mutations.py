@@ -1,9 +1,9 @@
 from qiskit import QuantumCircuit
 
-from e2e_test.entangled_assertion_test.tst import AbstractEntanglePropertyTest
+from e2e_test.entangled_assertion_test.tst import AbstractEntanglePropertyPropertyTest
 
 
-class MutationNoHEntanglePropertyTest(AbstractEntanglePropertyTest):
+class MutationNoHEntanglePropertyTest(AbstractEntanglePropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -12,7 +12,7 @@ class MutationNoHEntanglePropertyTest(AbstractEntanglePropertyTest):
         return qc
 
 
-class MutationNoCXEntanglePropertyTest(AbstractEntanglePropertyTest):
+class MutationNoCXEntanglePropertyTest(AbstractEntanglePropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
@@ -21,7 +21,7 @@ class MutationNoCXEntanglePropertyTest(AbstractEntanglePropertyTest):
         return qc
 
 
-class MutationAdditionalCXGateEntanglePropertyTest(AbstractEntanglePropertyTest):
+class MutationAdditionalCXGateEntanglePropertyTest(AbstractEntanglePropertyPropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)

@@ -3,7 +3,7 @@ from abc import ABC
 from qiskit_check.property_test.property_test import PropertyTest
 
 
-class TestBase(PropertyTest, ABC):
+class BasePropertyTest(PropertyTest, ABC):
     @staticmethod
     def confidence_level() -> float:
         return 0.99
