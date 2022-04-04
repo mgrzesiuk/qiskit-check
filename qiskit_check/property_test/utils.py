@@ -26,7 +26,7 @@ def vector_state_to_hopf_coordinates(
     if relative_phase < 0:
         relative_phase += 2*pi
 
-    return theta, relative_phase
+    return round(theta, 10), round(relative_phase, 10)
 
 
 def hopf_coordinates_to_vector_state(theta: float, phi: float) -> Tuple[complex, complex]:
@@ -54,7 +54,7 @@ def hopf_coordinates_to_bloch_vector(theta: float, phi: float) -> Tuple[float, f
     Returns: 3 d vector, x y z coordinates of the point respectively
 
     """
-    return fcos(phi)*fsin(theta), fsin(phi)*fsin(theta), fcos(theta)
+    return round_floats(fcos(phi)*fsin(theta)), round_floats(fsin(phi)*fsin(theta)), round_floats(fcos(theta))
 
 
 def amend_instruction_location(location: int) -> int:
@@ -67,3 +67,7 @@ def amend_instruction_location(location: int) -> int:
 
     """
     return location + 1
+
+
+def round_floats(num):
+    return round(num, 10)
