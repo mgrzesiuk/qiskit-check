@@ -11,14 +11,33 @@ from qiskit_check._test_engine.state_estimation.tomography import AbstractTomogr
 
 
 class AbstractTestRunner(ABC):
+    """
+    class responsible for running tests
+    """
     def __init__(
             self, printer: AbstractPrinter, tomography: AbstractTomography = None,
             corrector_factory: AbstractCorrectionFactory = NoCorrectionFactory()) -> None:
+        """
+        initialize
+        Args:
+            printer: object of subtype AbstractPrinter to print test information
+            tomography: object of subtype AbstractPrinter to be used for state tomography, default none
+            corrector_factory: factory to build corrector objects to correct confidence level to maintain specified
+            family wise confidence level
+        """
         self.printer = printer
         self.state_estimator = StateEstimator(tomography)
         self.corrector_factory = corrector_factory
 
     def run_tests(self, property_tests: Sequence[ConcretePropertyTest]) -> Tuple[List[str], List[str]]:
+        """
+        run collected tests
+        Args:
+            property_tests: sequence of property tests to be run
+
+        Returns: 2 values: list of the names that failed, list of the names that passed
+
+        """
         failed_tests = []
         succeeded_tests = []
         for property_test in property_tests:
@@ -34,4 +53,12 @@ class AbstractTestRunner(ABC):
 
     @abstractmethod
     def _run_test(self, property_test: ConcretePropertyTest) -> None:
+        """
+        run singular test
+        Args:
+            property_test: test to run
+
+        Returns: none
+
+        """
         pass

@@ -28,3 +28,6 @@ class IncorrectQubitStateError(IncorrectPropertyTestError):
 
 class NoExperimentsError(IncorrectPropertyTestError):
     pass
+
+class NoTomographyError(ValueError):
+    pass

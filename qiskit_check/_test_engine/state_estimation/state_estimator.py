@@ -6,11 +6,20 @@ from qiskit_utils import parse_result
 
 from qiskit_check._test_engine.concrete_property_test.test_case import TestCase
 from qiskit_check._test_engine.state_estimation.tomography.abstract_tomography import AbstractTomography
+from qiskit_check.property_test.property_test_errors import NoTomographyError
 from qiskit_check.property_test.test_results import TomographyResult
 
 
 class StateEstimator:
+    """
+    class for manging tomography state estimation
+    """
     def __init__(self, tomography: AbstractTomography) -> None:
+        """
+        initialize
+        Args:
+            tomography: object which is subtype of  AbstractTomography that implements desired tomography method
+        """
         self.tomography = tomography
         if self.tomography is not None:
             self.measurements = {
@@ -23,6 +32,16 @@ class StateEstimator:
     def run(
             self, test_case: TestCase,
             run_circuit: Callable[[QuantumCircuit, int], Result]) -> Optional[TomographyResult]:
+        """
+        run tomography
+        Args:
+            test_case: test case for which to run tomography
+            run_circuit: method used for running circuit
+
+        Returns: tomography result or none if tomography engine is not specified and no tomography is required,
+         raises NoTomographyError if tomography is not specified but is required
+
+        """
         if not test_case.assessor.tomography_requirement.requires_tomography:
             return None
         else:
@@ -34,6 +53,16 @@ class StateEstimator:
 
     def _run_test_case(
             self, test_case: TestCase, run_circuit: Callable[[QuantumCircuit, int], Result]) -> TomographyResult:
+        """
+        get tomography result for a single test case
+        Args:
+            test_case: test case for which to get tomography
+            run_circuit: method used to get qiskit result from running circuit
+
+        Returns: TomographyResult for that test case (holds information for all qubit locaiton pairs that required
+        tomography)
+
+        """
         qubits_requiring_tomography = test_case.assessor.tomography_requirement.qubits_requiring_tomography.copy()
         tomography_result = TomographyResult()
         while len(qubits_requiring_tomography.keys()) > 0:
@@ -69,6 +98,14 @@ class StateEstimator:
 
     @staticmethod
     def _parse_results(results: Dict[str, Dict[int, Dict[str, int]]]) -> Dict[int, Dict[str, Dict[str, int]]]:
+        """
+        parse result dictionary, exchange the keys of the upper 2 dictionaries
+        Args:
+            results: dictionary to parse
+
+        Returns: parsed dictionary
+
+        """
         inverted_dict = {}
         for axis, parsed_result in results.items():
             for qubit_index, counts in parsed_result.items():
@@ -77,7 +114,3 @@ class StateEstimator:
                 else:
                     inverted_dict[qubit_index] = {axis: counts}
         return inverted_dict
-
-
-class NoTomographyError(ValueError):
-    pass

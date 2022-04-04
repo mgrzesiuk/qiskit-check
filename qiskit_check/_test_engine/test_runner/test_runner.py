@@ -13,7 +13,18 @@ from qiskit_check.property_test.test_results import TestResult
 
 
 class TestRunner(AbstractTestRunner, ABC):
+    """
+    class responsible for running tests
+    """
     def _run_test(self, property_test: ConcretePropertyTest) -> None:
+        """
+        run singular test
+        Args:
+            property_test: test to run
+
+        Returns: none
+
+        """
         for test_case in property_test:
             self.printer.print_test_case_header(test_case)
 
@@ -33,33 +44,87 @@ class TestRunner(AbstractTestRunner, ABC):
 
     @abstractmethod
     def _run_circuit(self, circuit: QuantumCircuit, num_shots: int) -> Result:
+        """
+        execute a given circuit
+        Args:
+            circuit: QuantumCircuit to execute
+            num_shots: number of shots to run the circuit with
+
+        Returns: qiskit result
+
+        """
         pass
 
 
 class SimulatorTestRunner(TestRunner):
+    """
+    class responsible for running tests on aer simulators
+    """
     def __init__(
             self, simulator_name: str, printer: AbstractPrinter, tomography: AbstractTomography = None,
             corrector_factory: AbstractCorrectionFactory = NoCorrectionFactory()) -> None:
+        """
+        initialize
+        Args:
+            simulator_name: name of the aer simulator to be used
+            printer: object of subtype AbstractPrinter to print test information
+            tomography: object of subtype AbstractPrinter to be used for state tomography, default none
+            corrector_factory: factory to build corrector objects to correct confidence level to maintain specified
+            family wise confidence level
+        """
         super().__init__(printer, tomography, corrector_factory)
         self.backend = Aer.get_backend(simulator_name)
 
     def _run_circuit(self, circuit: QuantumCircuit, num_shots: int) -> Result:
+        """
+        execute a given  on a Aer simulator backend (which is exactly specified in simulator_name)
+        Args:
+            circuit: QuantumCircuit to execute
+            num_shots: number of shots to run the circuit with
+
+        Returns: qiskit result
+
+        """
         transpiled_circuit = transpile(circuit, self.backend)
         return self.backend.run(transpiled_circuit, shots=num_shots).result()
 
 
 class IBMQDeviceRunner(TestRunner):
-    # TODO: test this on small example
+    """
+    class responsible for running tests on ibmq devices
+    """
+    #  TODO: test this on small example
     def __init__(
             self, backend_name: str, provider_hub: str, provider_group: str, provider_project: str,
             printer: AbstractPrinter, tomography: AbstractTomography = None,
             corrector_factory: AbstractCorrectionFactory = NoCorrectionFactory()) -> None:
+        """
+        initialize
+        Args:
+            backend_name: IBMQ device name
+            provider_hub: IBMQ provider hub name
+            provider_group: IBMQ provider group name
+            provider_project: IBMQ provider project name
+            printer: object of subtype AbstractPrinter to print test information
+            tomography: object of subtype AbstractPrinter to be used for state tomography, default none
+            corrector_factory: factory to build corrector objects to correct confidence level to maintain specified
+            family wise confidence level
+        """
         super().__init__(printer, tomography, corrector_factory)
         IBMQ.load_account()
         provider = IBMQ.get_provider(hub=provider_hub, group=provider_group, project=provider_project)
         self.backend = provider.get_backend(backend_name)
 
     def _run_circuit(self, circuit: QuantumCircuit, num_shots: int) -> Result:
+        """
+        execute a given on a IBMQ device (which one is specified in constructor)
+        Args:
+            circuit: QuantumCircuit to execute
+            num_shots: number of shots to run the circuit with
+
+        Returns: qiskit result
+
+        """
         transpiled_circuit = transpile(circuit, self.backend)
         job = self.backend.run(transpiled_circuit, shots=num_shots)
         job_monitor(job, interval=2)
