@@ -8,11 +8,12 @@ class BonferroniCorrection(AbstractCorrection):
     """
     def get_corrected_confidence_level(self) -> float:
         """
-        get confidence level for individual assertion
+        get confidence level for individual assertion (x=1 - (1-a)/m, since then 1-x = (1-a)/m which is desired p value
+        threshold)
         Returns: confidence level for assertion
 
         """
-        return self.familywise_confidence_level/self.num_assertions
+        return 1 - (1 - self.familywise_confidence_level)/self.num_assertions
 
 
 class BonferroniCorrectionFactory(AbstractCorrectionFactory):

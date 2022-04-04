@@ -14,17 +14,17 @@ class TestBoneferroniCorrection:
         familywise = 0.876
         num_assertions = 3
         correction = BonferroniCorrection(familywise, num_assertions)
-        assert correction.get_corrected_confidence_level() == familywise/num_assertions
-        assert correction.get_corrected_confidence_level() == familywise/num_assertions
-        assert correction.get_corrected_confidence_level() == familywise/num_assertions
+        assert pytest.approx(1 - correction.get_corrected_confidence_level()) == (1 - familywise)/num_assertions
+        assert pytest.approx(1 - correction.get_corrected_confidence_level()) == (1 - familywise)/num_assertions
+        assert pytest.approx(1 - correction.get_corrected_confidence_level()) == (1 - familywise)/num_assertions
 
     def test_get_corrected_confidence_level_returns_0_value_when_familywise_0(self):
         familywise = 0
         num_assertions = 3
         correction = BonferroniCorrection(familywise, num_assertions)
-        assert correction.get_corrected_confidence_level() == familywise/num_assertions
-        assert correction.get_corrected_confidence_level() == familywise/num_assertions
-        assert correction.get_corrected_confidence_level() == familywise/num_assertions
+        assert pytest.approx(1 - correction.get_corrected_confidence_level()) == (1 - familywise)/num_assertions
+        assert pytest.approx(1 - correction.get_corrected_confidence_level()) == (1 - familywise)/num_assertions
+        assert pytest.approx(1 - correction.get_corrected_confidence_level()) == (1 - familywise)/num_assertions
 
     def test_get_corrected_confidence_level_throws_arithmetic_error_when_no_assertions(self):
         familywise = 1
