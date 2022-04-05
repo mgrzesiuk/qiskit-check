@@ -4,7 +4,7 @@ from typing import Sequence, List
 from qiskit import QuantumCircuit
 from scipy.spatial.transform import Rotation
 
-from e2e_test.test_base import BasePropertyTest
+from e2e_test.base_property_test import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.assertions import AssertStateTransformed
 from qiskit_check.property_test.resources.test_resource import Qubit

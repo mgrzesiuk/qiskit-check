@@ -4,7 +4,7 @@ from typing import Sequence, Dict
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import QFT
 
-from e2e_test.test_base import BasePropertyTest
+from e2e_test.base_property_test import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange

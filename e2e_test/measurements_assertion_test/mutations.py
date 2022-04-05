@@ -2,7 +2,7 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit, ClassicalRegister
 
-from e2e_test.test_base import BasePropertyTest
+from e2e_test.base_property_test import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertMeasurementEqual, AssertMostProbable
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange

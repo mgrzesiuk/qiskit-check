@@ -3,7 +3,7 @@ from typing import Sequence
 
 from qiskit import QuantumCircuit
 
-from e2e_test.test_base import BasePropertyTest
+from e2e_test.base_property_test import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.assertions import AssertStateEqual
 from qiskit_check.property_test.resources.test_resource import Qubit
