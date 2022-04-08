@@ -1,6 +1,7 @@
 from typing import Sequence, Tuple, List
 
 from numpy import ndarray, asarray, cos, sin, dot, arccos, linspace, longdouble
+from math import fmod, pi
 from numpy.random import choice
 from qiskit.quantum_info import Statevector
 
@@ -112,12 +113,12 @@ class NaiveDistanceSingleInputGenerator:
         chosen_bucket = self.buckets[chosen_bucket_index]
 
         bucket_theta_size = self.qubit.values.theta_end - self.qubit.values.theta_start
-        bucket_theta_start = chosen_bucket[0] - bucket_theta_size/self.quantization_rate
-        bucket_theta_end = chosen_bucket[0] + bucket_theta_size/self.quantization_rate
+        bucket_theta_start = fmod(chosen_bucket[0] - bucket_theta_size/self.quantization_rate, pi)
+        bucket_theta_end = fmod(chosen_bucket[0] + bucket_theta_size/self.quantization_rate, pi)
 
         bucket_phi_size = self.qubit.values.phi_end - self.qubit.values.phi_start
-        bucket_phi_start = chosen_bucket[1] - bucket_phi_size/self.quantization_rate
-        bucket_phi_end = chosen_bucket[1] + bucket_phi_size/self.quantization_rate
+        bucket_phi_start = fmod(chosen_bucket[1] - bucket_phi_size/self.quantization_rate, 2*pi)
+        bucket_phi_end = fmod(chosen_bucket[1] + bucket_phi_size/self.quantization_rate, 2*pi)
 
         bucket_qubit = Qubit(QubitRange(bucket_theta_start, bucket_phi_start, bucket_theta_end, bucket_phi_end))
         generated_qubit = self.uniform_generator.generate([bucket_qubit])[0]

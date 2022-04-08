@@ -6,6 +6,10 @@ from case_studies.deutsch_jozsa.tst import AbstractDeutschJozsaPropertyTest
 
 
 class MutationNoOracleDeutschJozsaPropertyTest(AbstractDeutschJozsaPropertyTest):
+    def __init__(self):
+        super().__init__()
+        self.balanced_or_constant = 1
+
     @property
     def circuit(self) -> QuantumCircuit:
         return mutation_no_oracle_deutsch_jozsa(QuantumCircuit(4, 3), self.balanced_or_constant)

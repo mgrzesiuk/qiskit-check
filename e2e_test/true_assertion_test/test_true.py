@@ -44,7 +44,7 @@ class HEqualTruePropertyPropertyTest(BasePropertyTest):
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:
-        return [Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]  # TODO: possible direction - allow random but equal qubit generation
+        return [Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertTrue(self.verify, 0)

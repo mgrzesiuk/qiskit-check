@@ -1,0 +1,8 @@
+test_runner:
+  class: "qiskit_check._test_engine.test_runner.SimulatorTestRunner"
+  args:
+    simulator_name: "aer_simulator"
+    printer:
+      class: "qiskit_check._test_engine.printers.TerminalPrinter"
+input_generator_factory:
+  class: "qiskit_check._test_engine.generator.NaiveInputGenerator"
