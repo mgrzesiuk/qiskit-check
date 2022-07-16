@@ -2,9 +2,8 @@ from .abstract_assertion import AbstractAssertion
 from .assert_true import AssertTrue
 from .assert_probability import AssertProbability
 from .assert_entangled import AssertEntangled
-from .assert_measurements import AssertMostProbable, AssertMeasurementEqual
-from .assert_transformed import AssertTransformed
-from .assert_teleported import AssertTeleported
-from .assert_state_equal import AssertStateEqual
-from .assert_state_transformed import AssertStateTransformed
-from .assert_equal import AssertEqual
+from .assert_transformed import AssertTransformedByProbability
+from .assert_teleported import AssertTeleportedByProbability
+from .assert_state_equal import AssertStateEqualConcreteValue
+from .assert_state_transformed import AssertTransformedByState
+from .assert_equal import AssertEqualByProbability

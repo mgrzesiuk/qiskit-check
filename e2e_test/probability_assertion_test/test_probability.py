@@ -14,7 +14,6 @@ class XProbabilityPropertyPropertyTest(BasePropertyTest):
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
         qc.x(0)
-        qc.measure_all()
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:
@@ -22,7 +21,6 @@ class XProbabilityPropertyPropertyTest(BasePropertyTest):
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertProbability(qubits[0], "1", 1)
-
 
 class SProbabilityPropertyPropertyTest(BasePropertyTest):
     @property
@@ -84,4 +82,3 @@ class XHProbabilityPropertyPropertyTest(BasePropertyTest):
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
         return AssertProbability(qubits[0], "1", 1/2)
-

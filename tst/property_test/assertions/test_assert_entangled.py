@@ -5,7 +5,6 @@ from qiskit.quantum_info import Statevector
 from qiskit_check.property_test.assertions import AssertEntangled
 from qiskit_check.property_test.property_test_errors import NoExperimentsError
 from qiskit_check.property_test.resources import AnyRange, Qubit, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult, MeasurementResult
 
 
 class TestAssertEntangled:

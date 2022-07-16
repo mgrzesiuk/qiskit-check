@@ -4,10 +4,9 @@ import pytest
 from pytest_mock import MockFixture
 from qiskit.quantum_info import Statevector
 
-from qiskit_check.property_test.assertions import AssertEqual
+from qiskit_check.property_test.assertions import AssertEqualByProbability
 from qiskit_check.property_test.property_test_errors import NoExperimentsError
 from qiskit_check.property_test.resources import Qubit, AnyRange, ConcreteQubit
-from qiskit_check.property_test.test_results import MeasurementResult, TestResult
 
 
 class TestAssertEqual:

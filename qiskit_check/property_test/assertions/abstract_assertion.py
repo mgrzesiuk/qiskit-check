@@ -1,51 +1,67 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, List, Sequence, Callable, Tuple, Union
+from uuid import uuid4
 
-from qiskit_check.property_test.property_test_errors import NoExperimentsError
+from qiskit.circuit import Instruction, Measure
+from qiskit_check.property_test.test_results.test_result import TestResult
 
+from qiskit_check.property_test.property_test_errors import IncorrectPropertyTestError, NoExperimentsError
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult
-
 
 class AbstractAssertion(ABC):
-    @abstractmethod
-    def get_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
-        """
-        get_p_value if the assertion holds
-        Args:
-            experiments: result of the batch of tests executed
-            resource_matcher: dictionary that matched template qubit to a index of a "real" qubit and it's initial state
+    def __init__(self, measurements: Sequence[Instruction], location: Union[int, None], combiner: Callable[[List[List[Dict[str, int]]]], List[List[float]]]) -> None:
+        self.verify_measurements(measurements)
+        
+        self.measurements = measurements
+        self.location = location if location is not None else None
+        self.combiner = combiner
+        self.name = str(uuid4())
 
-        Returns: p-value of the assertion
-        """
+    def compute_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
+        self.check_if_experiments_empty(experiments)
+        return self.get_p_value(experiments, resource_matcher, num_measurements, num_experiments)
+
+    @abstractmethod
+    def get_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
         pass
 
     def verify(self, confidence_level: float, p_value: float) -> None:
-        """
-        verify if assertion passed (do nothing then) or raise an error if it failed
-        Args:
-            confidence_level: expected confidence level of the test
-            p_value: p value obtained from get_p_value()
-
-        Returns: None
-        """
-
         if 1 - confidence_level >= p_value:
             threshold = round(1 - confidence_level, 5)
             raise AssertionError(f"{self.__class__.__name__} failed, p value of the test was {p_value} which "
                                  f"was lower then required {threshold} to fail to reject equality hypothesis")
 
-    def get_qubits_requiring_tomography(self) -> Dict[Qubit, int]:
-        return {}
+    def get_qubits(self) -> Tuple[Qubit]:
+        qubits = []
+        for _, param_value in self.__dict__.items():
+            if isinstance(param_value, Qubit):
+                qubits.append(param_value)
+
+        if len(qubits) == 0:
+            raise IncorrectPropertyTestError("Assertion must specify at least one qubit")
+        return tuple(qubits)
+    
+    @staticmethod
+    def verify_measurements(measurements: Sequence[Instruction]) -> None:
+        #TODO: implement this, check if measurement inside and name not measure if not measure operation
+        for measurement in measurements:
+            if not AbstractAssertion.is_measurement_valid(measurement):
+                raise IncorrectPropertyTestError("measurements provided must muse qiskit Measure gate at some points")
+    
+    @staticmethod
+    def is_measurement_valid(measurement: Instruction) -> bool:
+        if measurement.name == Measure().name:
+            return True
+        if measurement._definition is None:
+            return False # this is only ok if measurement is z basis measurement but we already know its not
+        
+        is_valid = False
+        for instruction, _, _ in measurement._definition.data:
+            is_valid = is_valid or AbstractAssertion.is_measurement_valid(instruction)
+        
+        return is_valid
 
     @staticmethod
-    def check_if_experiments_empty(result: TestResult) -> None:
-        """
-        check if number of experiments is 0 and if so raise an error
-        Args:
-            result: results obtained from test runner
-
-        Returns: None
-        """
-        if result.num_experiments == 0:
-            raise NoExperimentsError("no experiments have been provided")
+    def check_if_experiments_empty(experiments: TestResult) -> None:
+        if len(experiments.individual_measurements) ==  0:
+            raise NoExperimentsError("the assertion received no qiskit results")

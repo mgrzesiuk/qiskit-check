@@ -5,7 +5,7 @@ from qiskit import QuantumCircuit
 
 from e2e_test.base_property_test import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
-from qiskit_check.property_test.assertions import AssertStateEqual
+from qiskit_check.property_test.assertions import AssertStateEqualConcreteValue
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
@@ -21,7 +21,7 @@ class MutationXStateEqualPropertyPropertyTest(BasePropertyTest):
         return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 0, (pi, 0))
+        return AssertStateEqualConcreteValue(qubits[0], (pi, 0), 0)
 
 
 class MutationH0StateEqualPropertyPropertyTest(BasePropertyTest):
@@ -36,7 +36,7 @@ class MutationH0StateEqualPropertyPropertyTest(BasePropertyTest):
         return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 1, (pi/2, pi))
+        return AssertStateEqualConcreteValue(qubits[0], (pi/2, pi), 1)
 
 
 class MutationH1StateEqualPropertyPropertyTest(BasePropertyTest):
@@ -51,7 +51,7 @@ class MutationH1StateEqualPropertyPropertyTest(BasePropertyTest):
         return [Qubit(QubitRange(pi, 0, pi, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 1, (pi/2, pi))
+        return AssertStateEqualConcreteValue(qubits[0], (pi/2, pi), 1)
 
 
 class MutationS0StateEqualPropertyPropertyTest(BasePropertyTest):
@@ -67,7 +67,7 @@ class MutationS0StateEqualPropertyPropertyTest(BasePropertyTest):
         return [Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 2, (0, pi/2))
+        return AssertStateEqualConcreteValue(qubits[0], (0, pi/2), 2)
 
 
 class MutationS1StateEqualPropertyPropertyTest(BasePropertyTest):
@@ -83,4 +83,4 @@ class MutationS1StateEqualPropertyPropertyTest(BasePropertyTest):
         return [Qubit(QubitRange(pi, 0, pi, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertStateEqual(qubits[0], 2, (pi, pi/2))
+        return AssertStateEqualConcreteValue(qubits[0], (pi, pi/2), 2)

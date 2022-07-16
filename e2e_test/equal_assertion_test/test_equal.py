@@ -5,7 +5,7 @@ from qiskit import QuantumCircuit
 
 from e2e_test.base_property_test import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
-from qiskit_check.property_test.assertions import AssertEqual
+from qiskit_check.property_test.assertions import AssertEqualByProbability
 from qiskit_check.property_test.resources.test_resource import Qubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
 
@@ -15,7 +15,7 @@ class AbstractEqualPropertyPropertyTest(BasePropertyTest, ABC):
         return [Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertEqual(qubits[0], qubits[1])
+        return AssertEqualByProbability(qubits[0], qubits[1])
 
 
 class XEqualPropertyTest(AbstractEqualPropertyPropertyTest):

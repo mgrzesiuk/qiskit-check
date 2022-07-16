@@ -5,17 +5,16 @@ from pytest_mock import MockFixture
 from qiskit.quantum_info import Statevector
 from scipy.spatial.transform import Rotation
 
-from qiskit_check.property_test.assertions import AssertTransformed
+from qiskit_check.property_test.assertions import AssertTeleportedByProbability
 from qiskit_check.property_test.property_test_errors import NoExperimentsError
 from qiskit_check.property_test.resources import Qubit, AnyRange, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult, MeasurementResult
 
 
 class TestAssertTransformed:
     def test_check_if_experiments_empty_throws_no_experiments_error_when_no_experiments(self):
         q0 = Qubit(AnyRange())
 
-        assert_transformed = AssertTransformed(q0, Rotation.identity())
+        assert_transformed = AssertTeleportedByProbability(q0, Rotation.identity())
         test_results = TestResult([], 1000, None)
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
@@ -37,7 +36,7 @@ class TestAssertTransformed:
         measurement_result.get_qubit_result.side_effect = get_result
         measurement_results = [measurement_result for _ in range(1000)]
         test_results = TestResult(measurement_results, 1000, None)
-        assert_transformed = AssertTransformed(q0, Rotation.from_euler("X", [pi]))
+        assert_transformed = AssertTeleportedByProbability(q0, Rotation.from_euler("X", [pi]))
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
@@ -56,7 +55,7 @@ class TestAssertTransformed:
         measurement_result.get_qubit_result.side_effect = get_result
         measurement_results = [measurement_result for _ in range(1000)]
         test_results = TestResult(measurement_results, 1000, None)
-        assert_transformed = AssertTransformed(q0, Rotation.from_euler("X", [pi]))
+        assert_transformed = AssertTeleportedByProbability(q0, Rotation.from_euler("X", [pi]))
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
@@ -64,11 +63,11 @@ class TestAssertTransformed:
 
     def test_verify_nothing_happens_when_correct(self):
         q0 = Qubit(AnyRange())
-        assert_transformed = AssertTransformed(q0, Rotation.identity())
+        assert_transformed = AssertTeleportedByProbability(q0, Rotation.identity())
         assert_transformed.verify(0.99, 0.45)
 
     def test_verify_assertion_error_thrown_when_not_correct(self):
         q0 = Qubit(AnyRange())
-        assert_transformed = AssertTransformed(q0, Rotation.identity())
+        assert_transformed = AssertTeleportedByProbability(q0, Rotation.identity())
         with pytest.raises(AssertionError):
             assert_transformed.verify(0.9, 0.05)

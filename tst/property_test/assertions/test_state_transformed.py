@@ -5,10 +5,8 @@ from pytest_mock import MockFixture
 from qiskit.quantum_info import Statevector
 from scipy.spatial.transform import Rotation
 
-from qiskit_check.property_test.assertions import AssertStateTransformed
-from qiskit_check.property_test.property_test_errors import NoTomographyError
+from qiskit_check.property_test.assertions import AssertTransformedByState
 from qiskit_check.property_test.resources import AnyRange, Qubit, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult, TomographyResult
 
 
 class TestStateTransformed:
@@ -18,7 +16,7 @@ class TestStateTransformed:
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_transformed = AssertStateTransformed(q0, 0, Rotation.identity())
+        assert_transformed = AssertTransformedByState(q0, 0, Rotation.identity())
 
         with pytest.raises(NoTomographyError):
             assert_transformed.get_p_value(test_results, resource_matcher)
@@ -31,7 +29,7 @@ class TestStateTransformed:
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_transformed = AssertStateTransformed(q0, 0, Rotation.from_euler("X", [pi]))
+        assert_transformed = AssertTransformedByState(q0, 0, Rotation.from_euler("X", [pi]))
 
         assert 1 == assert_transformed.get_p_value(test_results, resource_matcher)
 
@@ -43,14 +41,14 @@ class TestStateTransformed:
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_transformed = AssertStateTransformed(q0, 0, Rotation.identity())
+        assert_transformed = AssertTransformedByState(q0, 0, Rotation.identity())
 
         assert 0 == assert_transformed.get_p_value(test_results, resource_matcher)
 
     def test_verify_throws_assertion_error_when_not_equal(self):
         q0 = Qubit(AnyRange())
 
-        assert_transformed = AssertStateTransformed(q0, 0, Rotation.identity())
+        assert_transformed = AssertTransformedByState(q0, 0, Rotation.identity())
 
         with pytest.raises(AssertionError):
             assert_transformed.verify(0.99, 0.001)
@@ -58,6 +56,6 @@ class TestStateTransformed:
     def test_verify_does_nothing_when_equal(self):
         q0 = Qubit(AnyRange())
 
-        assert_transformed = AssertStateTransformed(q0, 0, Rotation.identity())
+        assert_transformed = AssertTransformedByState(q0, 0, Rotation.identity())
 
         assert_transformed.verify(0.99, 0.1)

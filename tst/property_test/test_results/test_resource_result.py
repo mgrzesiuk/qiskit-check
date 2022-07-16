@@ -4,8 +4,6 @@ import pytest
 from qiskit import Aer, QuantumCircuit, ClassicalRegister, transpile
 
 from qiskit_check.property_test.resources import Qubit, AnyRange
-from qiskit_check.property_test.test_results import TomographyResult, MeasurementResult
-from qiskit_check.property_test.utils import amend_instruction_location
 
 
 class TestTomographyResult:

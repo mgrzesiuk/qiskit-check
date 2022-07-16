@@ -4,10 +4,8 @@ import pytest
 from pytest_mock import MockFixture
 from qiskit.quantum_info import Statevector
 
-from qiskit_check.property_test.assertions import AssertStateEqual
-from qiskit_check.property_test.property_test_errors import NoTomographyError
+from qiskit_check.property_test.assertions import AssertStateEqualConcreteValue
 from qiskit_check.property_test.resources import Qubit, AnyRange, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult, TomographyResult
 
 
 class TestStateEqual:
@@ -17,7 +15,7 @@ class TestStateEqual:
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_equal = AssertStateEqual(q0, 0, (pi/2, 0))
+        assert_equal = AssertStateEqualConcreteValue(q0, 0, (pi/2, 0))
 
         with pytest.raises(NoTomographyError):
             assert_equal.get_p_value(test_results, resource_matcher)
@@ -30,7 +28,7 @@ class TestStateEqual:
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_equal = AssertStateEqual(q0, 0, (pi, 0))
+        assert_equal = AssertStateEqualConcreteValue(q0, 0, (pi, 0))
 
         assert 1 == assert_equal.get_p_value(test_results, resource_matcher)
 
@@ -42,14 +40,14 @@ class TestStateEqual:
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_equal = AssertStateEqual(q0, 0, (pi, 0))
+        assert_equal = AssertStateEqualConcreteValue(q0, 0, (pi, 0))
 
         assert 0 == assert_equal.get_p_value(test_results, resource_matcher)
 
     def test_verify_throws_assertion_error_when_not_equal(self):
         q0 = Qubit(AnyRange())
 
-        assert_equal = AssertStateEqual(q0, 0, (pi/2, 0))
+        assert_equal = AssertStateEqualConcreteValue(q0, 0, (pi/2, 0))
 
         with pytest.raises(AssertionError):
             assert_equal.verify(0.99, 0.001)
@@ -57,6 +55,6 @@ class TestStateEqual:
     def test_verify_does_nothing_when_equal(self):
         q0 = Qubit(AnyRange())
 
-        assert_equal = AssertStateEqual(q0, 0, (pi/2, 0))
+        assert_equal = AssertStateEqualConcreteValue(q0, 0, (pi/2, 0))
 
         assert_equal.verify(0.99, 0.1)

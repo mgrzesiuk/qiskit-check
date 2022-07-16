@@ -1,12 +1,17 @@
-from typing import Dict, Sequence
+from typing import Dict, List, Tuple, Set, Sequence
 
+from qiskit import QuantumCircuit
+from qiskit.circuit import Instruction
+from qiskit.result import Result
+from qiskit_utils import parse_result, parse_counts
+
+from qiskit_check._test_engine.measurement_location import MeasurementLocation
 from qiskit_check._test_engine.p_value_correction import AbstractCorrection
-from qiskit_check.property_test.assertions import AbstractAssertion
+from qiskit_check.property_test.assertions.abstract_assertion import AbstractAssertion
 from qiskit_check.property_test.property_test import PropertyTest
 from qiskit_check.property_test.property_test_errors import IncorrectAssertionError
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
 from qiskit_check.property_test.test_results import TestResult
-from qiskit_check._test_engine.state_estimation.tomography_requirement import TomographyRequirement
 
 
 class Assessor:
@@ -15,7 +20,7 @@ class Assessor:
     """
     def __init__(
             self, assertions: Sequence[AbstractAssertion], confidence_level: float,
-            resource_matcher: Dict[Qubit, ConcreteQubit], tomography_requirement: TomographyRequirement) -> None:
+            resource_matcher: Dict[Qubit, ConcreteQubit], measurement_locations: Dict[Tuple[Qubit], List[MeasurementLocation]]) -> None:
         """
         initialize
         Args:
@@ -28,9 +33,9 @@ class Assessor:
         self.assertions = assertions
         self.resource_matcher = resource_matcher
         self.confidence_level = confidence_level
-        self.tomography_requirement = tomography_requirement
+        self.measurement_locations = measurement_locations
 
-    def assess(self, experiment_results: TestResult, corrector: AbstractCorrection) -> None:
+    def assess(self, results: List[Dict[str, Tuple[QuantumCircuit, Result]]], corrector: AbstractCorrection, num_measurements: int, num_experiments: int) -> None:
         """
         evaluate assertions given test results
         Args:
@@ -41,9 +46,53 @@ class Assessor:
 
         """
         for assertion in self.assertions:
-            p_value = assertion.get_p_value(experiment_results, self.resource_matcher)
+            assertion_input = TestResult(self.get_result(results, assertion), self.get_counts(results, assertion))
+            p_value = assertion.compute_p_value(assertion_input, self.resource_matcher, num_measurements, num_experiments)
             confidence_level = corrector.get_corrected_confidence_level()
             assertion.verify(confidence_level, p_value)
+    
+    def get_counts(self, experiment_results: List[Dict[str, Tuple[Result, QuantumCircuit]]], assertion: AbstractAssertion) -> List[List[Dict[str, int]]]:
+        measurement_names = self.get_measurement_names(assertion)
+
+        # TODO: this can be optimized
+        qubits = assertion.get_qubits()
+        results_per_instruction = []
+        for instruction in assertion.measurements:
+            encoding = self.encode_measurement(qubits, assertion.location, instruction)
+            results = []
+            for experiment_result in experiment_results:
+                results.append(parse_counts(*experiment_result[encoding], measurement_names))
+            results_per_instruction.append(results)
+        results_per_instruction
+        return results_per_instruction
+
+    
+    def get_result(self, experiment_results: List[Dict[str, Tuple[Result, QuantumCircuit]]], assertion: AbstractAssertion) -> Dict[Qubit, List[List[float]]]:
+        measurement_names = self.get_measurement_names(assertion)
+        # TODO: this can be optimized
+        parsed_result = {}
+        qubits = assertion.get_qubits()
+        for qubit in qubits:
+            results_per_instruction = []
+            for instruction in assertion.measurements:
+                encoding = self.encode_measurement(qubits, assertion.location, instruction)
+                results = []
+                for experiment_result in experiment_results:
+                    results.append(parse_result(*experiment_result[encoding], measurement_names)[self.resource_matcher[qubit].qubit_index])
+                results_per_instruction.append(results)
+            parsed_result[qubit] = assertion.combiner(results_per_instruction)
+        return parsed_result
+
+    @staticmethod
+    def encode_measurement(qubits: Tuple[Qubit], location: int, instruction: Instruction) -> str:
+        return f"{hash(qubits)}-{location}-{instruction.name}"
+    
+    @staticmethod
+    def get_measurement_names(assertion: AbstractAssertion) -> Set[str]:
+        measurement_names = set()
+        for measurement in assertion.measurements:
+            measurement_names.add(measurement.name)
+        return measurement_names
 
 
 class AssessorFactory:
@@ -69,7 +118,21 @@ class AssessorFactory:
             assertions = (test_assertions, )
         else:
             raise IncorrectAssertionError(property_test)
+        
+        measurement_locations = AssessorFactory._create_measurement_locations(assertions)
+        
+        return Assessor(assertions, property_test.confidence_level(), resource_matcher, measurement_locations)
+    
+    @staticmethod
+    def _create_measurement_locations(assertions: Sequence[AbstractAssertion]) -> Dict[Tuple[Qubit], List[MeasurementLocation]]:
+        measurement_locations = {}
+        
+        for assertion in assertions:
+            qubits = assertion.get_qubits()
+            for instruction in assertion.measurements:
+                if qubits in measurement_locations:
+                    measurement_locations[qubits].append(MeasurementLocation(assertion.location, instruction))
+                else:
+                    measurement_locations[qubits] = [MeasurementLocation(assertion.location, instruction)]
 
-        tomography_requirement = TomographyRequirement(assertions)
-
-        return Assessor(assertions, property_test.confidence_level(), resource_matcher, tomography_requirement)
+        return measurement_locations

@@ -1,53 +1,43 @@
 from math import isnan
-from typing import Dict
+from typing import Union, Dict, List, Sequence
 
-from scipy.stats import ttest_1samp
+from scipy.stats import ttest_1samp, combine_pvalues
+from qiskit.circuit import Instruction, Measure
+from qiskit_check.property_test.test_results.test_result import TestResult
 
 from qiskit_check.property_test.assertions import AbstractAssertion
-from qiskit_check.property_test.property_test_errors import IncorrectQubitStateError, NoQubitFoundError
+from qiskit_check.property_test.property_test_errors import IncorrectQubitStateError
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult
 
 
 class AssertProbability(AbstractAssertion):
     """
     assert if probability of qubit being in a given state is as expected
     """
-    def __init__(self, qubit: Qubit, state: str, probability: float) -> None:
-        """
-        initialize
-        Args:
-            qubit: qubit template to assert
-            state: probability of which state to assert
-            probability: expected probability
-        """
+    def __init__(self, qubit: Qubit, state: str, probability: float, measurements: Sequence[Instruction] = (Measure(),), location: Union[int, None] = None) -> None:
+        super().__init__(measurements, location, self.combiner)
         self.qubit = qubit
         if state != "0" and state != "1":
             raise IncorrectQubitStateError("It is only possible to assert probability of qubit being in state 0 or 1")
         self.state = state
         self.probability = probability
 
-    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
-        """
-        get p value of the test that probability of qubit being in a given state is as specified
-        Args:
-            result: test results obtained from running property test
-            resource_matcher: mapping between qubit templates and ConcreteQubit holding information about
-            initial state and index in the circuit of the real qubit
+    def combiner(self, experiments: List[List[Dict[str, int]]]) -> List[List[float]]:
+        probabilities_for_measurement = []
+        for experiments_for_measurement in experiments:
+            probabilities = []
+            for experiment in experiments_for_measurement:
+                probabilities.append(experiment[self.state]/sum(experiment.values()))
+            probabilities_for_measurement.append(probabilities)
+        return probabilities_for_measurement
 
-        Returns: p-value, float between 0 and 1
-        """
-        if self.qubit not in resource_matcher:
-            raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
-        self.check_if_experiments_empty(result)
-
-        qubit_index = resource_matcher[self.qubit].qubit_index
-
-        experiment_results = []
-        for measurement_result in result.measurement_results:
-            experiment_results.append(measurement_result.get_qubit_result(qubit_index, self.state)/result.num_shots)
-
-        p_value = ttest_1samp(experiment_results, self.probability, alternative="two-sided", nan_policy='omit').pvalue
-        if isnan(p_value):
-            p_value = 1
+    def get_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
+        results = experiments.individual_measurements[self.qubit]
+        p_values = []
+        for result_per_measurement in results:
+            p_value = ttest_1samp(result_per_measurement, self.probability, alternative="two-sided", nan_policy='omit').pvalue
+            if isnan(p_value):
+                p_value = 1 #TODO: figure out a better way to handle cases where tests return nan
+            p_values.append(p_value)
+        _, p_value = combine_pvalues(p_values)
         return p_value

@@ -2,10 +2,9 @@ import pytest
 from pytest_mock import MockFixture
 from qiskit.quantum_info import Statevector
 
-from qiskit_check.property_test.assertions import AssertTeleported
+from qiskit_check.property_test.assertions import AssertTeleportedByProbability
 from qiskit_check.property_test.property_test_errors import NoExperimentsError
 from qiskit_check.property_test.resources import Qubit, AnyRange, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult, MeasurementResult
 
 
 class TestAssertTeleported:

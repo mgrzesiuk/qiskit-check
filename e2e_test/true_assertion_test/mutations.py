@@ -1,5 +1,5 @@
 from math import pi
-from typing import Sequence, Dict
+from typing import List, Sequence, Dict
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import QFT
@@ -8,7 +8,6 @@ from e2e_test.base_property_test import BasePropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
-from qiskit_check.property_test.test_results import MeasurementResult
 
 
 class MutationXEqualTruePropertyPropertyTest(BasePropertyTest):
@@ -23,13 +22,16 @@ class MutationXEqualTruePropertyPropertyTest(BasePropertyTest):
         return [Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertTrue(self.verify, 0)
+        return AssertTrue(qubits, self.verify, 0)
 
-    def verify(self, measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def verify(self, measurement: List[Dict[str, int]], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         qubit_0_index = resource_matcher[self.qubits[0]].qubit_index
         qubit_1_index = resource_matcher[self.qubits[1]].qubit_index
+        difference = 0
+        for state, value in measurement[0].items():
+            if state[qubit_0_index] != state[qubit_1_index]:
+                difference += value
 
-        difference = measurement.get_qubit_result(qubit_0_index, "0") - measurement.get_qubit_result(qubit_1_index, "0")
         return difference
 
 
@@ -38,7 +40,6 @@ class MutationHEqualTruePropertyPropertyTest(BasePropertyTest):
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
         qc.h(0)
-        qc.h(1)
         qc.measure_all()
         return qc
 
@@ -46,14 +47,22 @@ class MutationHEqualTruePropertyPropertyTest(BasePropertyTest):
         return [Qubit(QubitRange(0, 0, 0, 0)), Qubit(QubitRange(0, 0, 0, 0))]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertTrue(self.verify, 0)
+        return AssertTrue(qubits, self.verify, 0)
 
-    def verify(self, measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def verify(self, measurement: List[Dict[str, int]], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         qubit_0_index = resource_matcher[self.qubits[0]].qubit_index
         qubit_1_index = resource_matcher[self.qubits[1]].qubit_index
+        qubit_0_0_state_count = 0
+        qubit_1_0_state_count = 0
+    
+        for state, value in measurement[0].items():
+            if state[qubit_0_index] == "0":
+                qubit_0_0_state_count += value
+            if state[qubit_1_index] == "0":
+                qubit_1_0_state_count += value
 
-        difference = measurement.get_qubit_result(qubit_0_index, "0") + measurement.get_qubit_result(qubit_1_index, "0")
-        return difference
+
+        return qubit_0_0_state_count - qubit_1_0_state_count
 
 
 class MutationQPETruePropertyPropertyTest(BasePropertyTest):
@@ -83,18 +92,17 @@ class MutationQPETruePropertyPropertyTest(BasePropertyTest):
         ]
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertTrue(self.verify, 1/8)
+        return AssertTrue(qubits[:-1], self.verify, 1/8)
 
     @staticmethod
-    def verify(measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
-        counts = measurement.get_counts()
+    def verify(measurement: List[Dict[str, int]], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
         max_state = ""
         max_count = 0
-        for state, count in counts.items():
-            if count > max_count:
+        for state, count in measurement[0].items():
+            if count < max_count:
                 max_count = count
                 max_state = state
-        nominator = int(max_state, 2)  # measured output
+        nominator = int(max_state[:-1][::-1], 2)  # measured output
         denominator = 2**3  # num of estimation qubits
 
-        return denominator/nominator
+        return nominator/denominator

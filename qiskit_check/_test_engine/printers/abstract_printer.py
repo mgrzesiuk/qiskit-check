@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Type, Set, List
 
-from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest
+from qiskit_check._test_engine.concrete_property_test.concrete_property_test import ConcretePropertyTest
 from qiskit_check._test_engine.concrete_property_test.test_case import TestCase
 from qiskit_check.property_test import PropertyTest
 

@@ -5,7 +5,6 @@ from qiskit.quantum_info import Statevector
 from qiskit_check.property_test.assertions import AssertProbability
 from qiskit_check.property_test.property_test_errors import NoExperimentsError
 from qiskit_check.property_test.resources import Qubit, AnyRange, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult, MeasurementResult
 
 
 class TestAssertProbability:

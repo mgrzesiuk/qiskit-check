@@ -1,6 +1,6 @@
 from abc import ABC
 from math import sin, pi
-from typing import Dict, Sequence
+from typing import Dict, List, Sequence
 
 from qiskit import QuantumCircuit
 
@@ -9,7 +9,6 @@ from case_studies.example_test_base import ExampleTestBase
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
 from qiskit_check.property_test.resources.qubit_range import QubitRange
-from qiskit_check.property_test.test_results import MeasurementResult
 
 
 class AbstractCountingPropertyTest(ExampleTestBase, ABC):
@@ -22,23 +21,22 @@ class AbstractCountingPropertyTest(ExampleTestBase, ABC):
     def get_qubits(self) -> Sequence[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(self.num_qubits)]
 
-    def check_number_of_solutions(
-            self, measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
-        max_value = -1
-        max_measurement = ""
-        for key, value in measurement.get_counts().items():
-            if value > max_value:
-                max_value = value
-                max_measurement = key
+    def check_number_of_solutions(self, measurement: List[Dict[str, int]], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+        max_state = ""
+        max_count = -1
+        for state, count in measurement[0].items():
+            if count > max_count:
+                max_count = count
+                max_state = state
 
-        measured_int = int(max_measurement, 2)
+        measured_int = int(max_state[:self.num_counting_qubits][::-1], 2)
         theta = (measured_int / (2 ** 4)) * pi * 2
         N = 2 ** self.num_searching_qubits
         M = N * (sin(theta / 2) ** 2)
         return N-M
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertTrue(self.check_number_of_solutions, 16)
+        return AssertTrue(qubits[:self.num_counting_qubits], self.check_number_of_solutions, 16)
 
 
 class CountingPropertyTest(AbstractCountingPropertyTest):

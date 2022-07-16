@@ -1,22 +1,19 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, List, Tuple
+from qiskit_check._test_engine.circuit_creator import CircuitCreator
 
-from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest
+from qiskit_check._test_engine.concrete_property_test.concrete_property_test import ConcretePropertyTest
 from qiskit_check._test_engine.p_value_correction import NoCorrectionFactory
 from qiskit_check._test_engine.p_value_correction.abstract_correction import AbstractCorrectionFactory
 
 from qiskit_check._test_engine.printers import AbstractPrinter
-from qiskit_check._test_engine.state_estimation.state_estimator import StateEstimator
-from qiskit_check._test_engine.state_estimation.tomography import AbstractTomography
 
 
 class AbstractTestRunner(ABC):
     """
     class responsible for running tests
     """
-    def __init__(
-            self, printer: AbstractPrinter, tomography: AbstractTomography = None,
-            corrector_factory: AbstractCorrectionFactory = NoCorrectionFactory()) -> None:
+    def __init__(self, printer: AbstractPrinter, corrector_factory: AbstractCorrectionFactory = NoCorrectionFactory(), circuit_creator: CircuitCreator = CircuitCreator()) -> None:
         """
         initialize
         Args:
@@ -26,8 +23,8 @@ class AbstractTestRunner(ABC):
             family wise confidence level
         """
         self.printer = printer
-        self.state_estimator = StateEstimator(tomography)
         self.corrector_factory = corrector_factory
+        self.circuit_creator= circuit_creator
 
     def run_tests(self, property_tests: Sequence[ConcretePropertyTest]) -> Tuple[List[str], List[str]]:
         """

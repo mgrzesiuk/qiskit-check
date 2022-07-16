@@ -1,3 +1,4 @@
+import uuid
 from qiskit.quantum_info import Statevector
 
 from qiskit_check.property_test.resources.qubit_range import QubitRange
@@ -12,8 +13,16 @@ class Qubit:
         initialize
         Args:
             values: possible initial states of the qubit
+            name: name of the qubit, used to identify it (if two qubits have the same name they will be considered equal)
         """
         self.values = values
+        self.name = str(uuid.uuid4())
+    
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Qubit) and self.name == other.name
+    
+    def __hash__(self) -> int:
+        return hash(self.name)
 
 
 class ConcreteQubit:

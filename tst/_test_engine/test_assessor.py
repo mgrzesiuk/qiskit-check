@@ -68,9 +68,9 @@ class TestAssessor:
 
         assessor = Assessor([assertion1_mock], conf_level, resource_matcher, mocker.MagicMock)
         with pytest.raises(AssertionError):
-            assessor.assess(experiment_results, corrector)
+            assessor.assess(experiment_results, corrector, 5, 5)
 
-        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher)
+        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher, 5, 5)
         assertion1_mock.verify.assert_called_once_with(
             corrector.get_corrected_confidence_level.return_value, assertion1_mock.get_p_value.return_value)
         corrector.get_corrected_confidence_level.assert_called_once()
@@ -86,9 +86,9 @@ class TestAssessor:
         corrector.get_corrected_confidence_level.return_value = mocker.MagicMock()
 
         assessor = Assessor([assertion1_mock], conf_level, resource_matcher, mocker.MagicMock)
-        assessor.assess(experiment_results, corrector)
+        assessor.assess(experiment_results, corrector, 123, 34512)
 
-        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher)
+        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher, 123, 34512)
         assertion1_mock.verify.assert_called_once_with(
             corrector.get_corrected_confidence_level.return_value, assertion1_mock.get_p_value.return_value)
         corrector.get_corrected_confidence_level.assert_called_once()
@@ -109,9 +109,9 @@ class TestAssessor:
 
         assessor = Assessor([assertion1_mock, assertion2_mock], conf_level, resource_matcher, mocker.MagicMock)
         with pytest.raises(AssertionError):
-            assessor.assess(experiment_results, corrector)
+            assessor.assess(experiment_results, corrector, 123, 5324)
 
-        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher)
+        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher, 123, 5324)
         assertion1_mock.verify.assert_called_once_with(
             corrector.get_corrected_confidence_level.return_value, assertion1_mock.get_p_value.return_value)
         assertion2_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher)
@@ -133,12 +133,12 @@ class TestAssessor:
         corrector.get_corrected_confidence_level.return_value = mocker.MagicMock()
 
         assessor = Assessor([assertion1_mock, assertion2_mock], conf_level, resource_matcher, mocker.MagicMock)
-        assessor.assess(experiment_results, corrector)
+        assessor.assess(experiment_results, corrector, 312, 321)
 
-        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher)
+        assertion1_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher, 312, 321)
         assertion1_mock.verify.assert_called_once_with(
             corrector.get_corrected_confidence_level.return_value, assertion1_mock.get_p_value.return_value)
-        assertion2_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher)
+        assertion2_mock.get_p_value.assert_called_once_with(experiment_results, resource_matcher, 312, 321)
         assertion2_mock.verify.assert_called_once_with(
             corrector.get_corrected_confidence_level.return_value, assertion2_mock.get_p_value.return_value)
         corrector.get_corrected_confidence_level.assert_called()

@@ -2,7 +2,7 @@ from typing import List, Set, Type
 
 from qiskit_check._test_engine.assessor import AssessorFactory
 from qiskit_check._test_engine.collector import Collector
-from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTest
+from qiskit_check._test_engine.concrete_property_test.concrete_property_test import ConcretePropertyTest
 from qiskit_check._test_engine.generator.abstract_input_generator import QubitInputGeneratorFactory
 from qiskit_check._test_engine.test_runner.abstract_test_runner import AbstractTestRunner
 from qiskit_check.property_test.property_test import PropertyTest

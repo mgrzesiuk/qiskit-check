@@ -5,7 +5,7 @@ from pytest_mock import MockFixture
 from qiskit import QuantumCircuit
 
 from qiskit_check._test_engine.concrete_property_test import ConcretePropertyTest
-from qiskit_check._test_engine.concrete_property_test.concerete_property_test import ConcretePropertyTestIterator
+from qiskit_check._test_engine.concrete_property_test.concrete_property_test import ConcretePropertyTestIterator
 from qiskit_check.property_test import PropertyTest
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.resources import Qubit

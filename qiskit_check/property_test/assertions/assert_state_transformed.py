@@ -1,23 +1,22 @@
 from math import isnan
-from typing import Dict
+from typing import Dict, List
 
 from numpy import asarray
 from scipy.spatial.transform import Rotation
 from scipy.stats import ttest_1samp, combine_pvalues
+from qiskit_check.property_test.test_results.test_result import TestResult
 
-from qiskit_check.property_test.assertions import AbstractAssertion
-from qiskit_check.property_test.property_test_errors import NoTomographyError
+from qiskit_check.property_test.assertions.abstract_state_assertions import AbstractDirectInversionStateAssertion
 from qiskit_check.property_test.resources import Qubit, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult
-from qiskit_check.property_test.utils import vector_state_to_hopf_coordinates, hopf_coordinates_to_bloch_vector, \
-    round_floats
+from qiskit_check.property_test.utils import vector_state_to_hopf_coordinates, hopf_coordinates_to_bloch_vector
+from qiskit_check.property_test.utils import round_floats
 
 
-class AssertStateTransformed(AbstractAssertion):
+class AssertTransformedByState(AbstractDirectInversionStateAssertion):
     """
     assert if qubit has been rotated by given rotation at a given location in circuit (via quantum tomography)
     """
-    def __init__(self, qubit: Qubit, location: int, rotation: Rotation) -> None:
+    def __init__(self, qubit: Qubit, rotation: Rotation, location: int = None) -> None:
         """
         initialize
         Args:
@@ -25,12 +24,12 @@ class AssertStateTransformed(AbstractAssertion):
             location: where in the circuit measure the qubits state (index in QuantumCircuit.data)
             rotation: scipy rotation object that specifies the expected rotation in 3d
         """
+        super().__init__(self.get_xyz_measurements(), location, self.combiner)
         self.qubit = qubit
-        self.location = location
         self.rotation = rotation
         self.test = ttest_1samp
 
-    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def get_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
         """
         get p_value of statistical test if the qubit has been transformed by given rotation
         Args:
@@ -40,9 +39,6 @@ class AssertStateTransformed(AbstractAssertion):
         Returns: p-value of the assertion
 
         """
-        if result.tomography_result is None:
-            raise NoTomographyError("tomography is required for AssertStateTransformed but no tomography result was provided")
-
         qubit_initial_value = resource_matcher[self.qubit].value.data
         theta, phi = vector_state_to_hopf_coordinates(qubit_initial_value[0], qubit_initial_value[1])
         initial_bloch_vector = hopf_coordinates_to_bloch_vector(theta, phi)
@@ -52,27 +48,19 @@ class AssertStateTransformed(AbstractAssertion):
             round_floats(expected_bloch_vector[1]),
             round_floats(expected_bloch_vector[2])
         )
-        samples = asarray(result.tomography_result.get_estimates(self.qubit, self.location))
 
-        x_p_value = self.test(samples[:, 0], expected_bloch_vector[0], alternative="two-sided").pvalue
+        x_p_value = self.test(experiments.individual_measurements[self.qubit][0], expected_bloch_vector[0], alternative="two-sided").pvalue
         if isnan(x_p_value):
             x_p_value = 1
 
-        y_p_value = self.test(samples[:, 1], expected_bloch_vector[1], alternative="two-sided").pvalue
+        y_p_value = self.test(experiments.individual_measurements[self.qubit][1], expected_bloch_vector[1], alternative="two-sided").pvalue
         if isnan(y_p_value):
             y_p_value = 1
 
-        z_p_value = self.test(samples[:, 2], expected_bloch_vector[2], alternative="two-sided").pvalue
+        z_p_value = self.test(experiments.individual_measurements[self.qubit][2], expected_bloch_vector[2], alternative="two-sided").pvalue
         if isnan(z_p_value):
             z_p_value = 1
 
         _, p_value = combine_pvalues([x_p_value, y_p_value, z_p_value])
         return p_value
 
-    def get_qubits_requiring_tomography(self) -> Dict[Qubit, int]:
-        """
-
-        Returns: map between qubit and location where tomography is to be inserted
-
-        """
-        return {self.qubit: self.location}

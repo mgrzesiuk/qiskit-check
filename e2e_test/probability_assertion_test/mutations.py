@@ -13,7 +13,6 @@ class MutationXProbabilityPropertyPropertyTest(BasePropertyTest):
     @property
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
-        qc.measure_all()
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:
@@ -29,7 +28,6 @@ class MutationSProbabilityPropertyPropertyTest(BasePropertyTest):
         qc = QuantumCircuit(1)
         qc.x(0)
         qc.s(0)
-        qc.measure_all()
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:
@@ -44,7 +42,6 @@ class MutationHProbabilityPropertyPropertyTest(BasePropertyTest):
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
         qc.x(0)
-        qc.measure_all()
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:
@@ -59,7 +56,6 @@ class MutationXTProbabilityPropertyPropertyTest(BasePropertyTest):
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(2)
         qc.t(0)
-        qc.measure_all()
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:
@@ -74,7 +70,6 @@ class MutationXHProbabilityPropertyPropertyTest(BasePropertyTest):
     def circuit(self) -> QuantumCircuit:
         qc = QuantumCircuit(1)
         qc.x(0)
-        qc.measure_all()
         return qc
 
     def get_qubits(self) -> Sequence[Qubit]:

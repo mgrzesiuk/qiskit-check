@@ -1,29 +1,32 @@
-from typing import Dict, List
+from typing import Union, Dict, List, Sequence
 
-from scipy.stats import chi2_contingency
+from scipy.stats import chi2_contingency, combine_pvalues
 from numpy import asarray, argwhere, all, delete
+from qiskit.circuit import Instruction, Measure
 
 from qiskit_check.property_test.assertions import AbstractAssertion
 from qiskit_check.property_test.property_test_errors import NoQubitFoundError
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
-from qiskit_check.property_test.test_results import TestResult
+from qiskit_check.property_test.test_results.test_result import TestResult
 
 
 class AssertEntangled(AbstractAssertion):
     """
     assert that 2 qubits are entangled
     """
-    def __init__(self, qubit_0: Qubit, qubit_1: Qubit) -> None:
+    def __init__(
+            self, qubit_0: Qubit, qubit_1: Qubit, measurements: Sequence[Instruction] = (Measure(),), location: Union[int, None] = None) -> None:
         """
         initialize
         Args:
             qubit_0: qubit 0 template
             qubit_1: qubit 1 template
         """
+        super().__init__(measurements, location, lambda _: [[]])
         self.qubit_0 = qubit_0
         self.qubit_1 = qubit_1
 
-    def get_p_value(self, result: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+    def get_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
         """
         get p value of the test that 2 qubits are entangled given the results
         Args:
@@ -37,15 +40,16 @@ class AssertEntangled(AbstractAssertion):
         if self.qubit_0 not in resource_matcher or self.qubit_1 not in resource_matcher:
             raise NoQubitFoundError("qubit specified in the assertion is not specified in qubits property of the test")
 
-        self.check_if_experiments_empty(result)
+        contingency_tables = self._get_contingency_tables(experiments.counts, resource_matcher)
 
-        qubit_0_index = resource_matcher[self.qubit_0].qubit_index
-        qubit_1_index = resource_matcher[self.qubit_1].qubit_index
+        p_values = []
+        for contingency_table in contingency_tables:
+            _, p_value, _, _ = chi2_contingency(contingency_table)
+            p_values.append(p_value)
+            
+        _, final_p_value = combine_pvalues(p_values)
 
-        contingency_table = self._get_contingency_table(result, qubit_0_index, qubit_1_index)
-
-        _, p_value, _, _ = chi2_contingency(contingency_table)
-        return p_value
+        return final_p_value
 
     def verify(self, confidence_level: float, p_value: float) -> None:
         """
@@ -63,23 +67,29 @@ class AssertEntangled(AbstractAssertion):
             raise AssertionError(f"AssertEntangled failed, p value of the test was {p_value} which "
                                  f"was higher then required {threshold} to reject independence hypothesis")
 
-    @staticmethod
-    def _get_contingency_table(result: TestResult, qubit_0_index: int, qubit_1_index: int) -> List[List[int]]:
+    def _get_contingency_tables(self, counts: List[List[Dict[str, int]]], resource_matcher: Dict[Qubit, ConcreteQubit]) -> List[List[List[int]]]:
         """
         computes contingency table
         """
-        contingency_table = asarray([
-            [0, 0],
-            [0, 0]
-        ])
+        contingency_tables = []
+        qubit_0_index = resource_matcher[self.qubit_0].qubit_index
+        qubit_1_index = resource_matcher[self.qubit_1].qubit_index
 
-        for measurement_result in result.measurement_results:
-            for states, value in measurement_result.get_counts().items():
-                qubit_0_state = int(states[qubit_0_index])
-                qubit_1_state = int(states[qubit_1_index])
-                contingency_table[qubit_0_state][qubit_1_state] += value
+        for counts_per_instruction in counts:
 
-        contingency_table = delete(contingency_table, argwhere(all(contingency_table[..., :] == 0, axis=0)), axis=1)
-        contingency_table = delete(contingency_table, argwhere(all(contingency_table[..., :] == 0, axis=1)), axis=0)
+            contingency_table = asarray([
+                [0, 0],
+                [0, 0]
+            ])
 
-        return contingency_table
+            for measurement_result in counts_per_instruction:
+                for states, value in measurement_result.items():
+                    qubit_0_state = int(states[qubit_0_index])
+                    qubit_1_state = int(states[qubit_1_index])
+                    contingency_table[qubit_0_state][qubit_1_state] += value
+
+            contingency_table = delete(contingency_table, argwhere(all(contingency_table[..., :] == 0, axis=0)), axis=1)
+            contingency_table = delete(contingency_table, argwhere(all(contingency_table[..., :] == 0, axis=1)), axis=0)
+        contingency_tables.append(contingency_table)
+
+        return contingency_tables

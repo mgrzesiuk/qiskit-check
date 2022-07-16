@@ -100,7 +100,6 @@ class TestCaseGenerator:
         """
         specified_qubits = concrete_property_test.qubits
         num_specified_qubits = len(specified_qubits)
-
         if num_specified_qubits != len(concrete_property_test.circuit.qubits):
             raise ArgumentMismatchError(concrete_property_test)
 

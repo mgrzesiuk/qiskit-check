@@ -4,6 +4,9 @@ from math import cos as fcos
 from math import sin as fsin
 from typing import Tuple
 
+from qiskit import QuantumCircuit, QuantumRegister
+from qiskit.circuit import Qubit as QiskitQubit
+
 
 def vector_state_to_hopf_coordinates(
         ground_state_amplitude: complex, excited_state_amplitude: complex) -> Tuple[float, float]:
@@ -57,17 +60,36 @@ def hopf_coordinates_to_bloch_vector(theta: float, phi: float) -> Tuple[float, f
     return round_floats(fcos(phi)*fsin(theta)), round_floats(fsin(phi)*fsin(theta)), round_floats(fcos(theta))
 
 
-def amend_instruction_location(location: int) -> int:
-    """
-    update circuit instruction location to account for internal circuit modifications
-    Args:
-        location: initial circuit instruction location
-
-    Returns: real location after accounting for internal circuit modifications
-
-    """
-    return location + 1
-
-
 def round_floats(num):
     return round(num, 10)
+
+
+def get_global_instruction_location(circuit: QuantumCircuit, target_qubit_index: int, qubit_specific_location: int) -> int:
+    global_index = 0
+    qubit_specific_index = 0
+    for _, qargs, _ in circuit.data:
+        if (qubit_specific_index == qubit_specific_location):
+            break
+        
+        for qubit in qargs:
+            if (get_index_of_qubit(circuit, qubit) == target_qubit_index):
+                qubit_specific_index += 1
+        
+        global_index += 1
+    
+    return global_index
+
+
+class QubitNotFoundError(Exception):
+    pass
+
+
+def get_index_of_qubit(circuit: QuantumCircuit, qubit: QiskitQubit) -> int:
+    index = 0
+    for qreg in circuit.qregs:
+        if qubit in qreg:
+            return index + qreg.index(qubit)
+        
+        index += len(qreg)
+    
+    raise QubitNotFoundError()

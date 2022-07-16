@@ -1,6 +1,6 @@
 from abc import ABC
 from random import randint
-from typing import Collection, Sequence, Dict
+from typing import Collection, List, Sequence, Dict
 
 from qiskit import QuantumCircuit
 
@@ -8,7 +8,6 @@ from case_studies.deutsch_jozsa.src import deutsch_jozsa
 from case_studies.example_test_base import ExampleTestBase
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertTrue
 from qiskit_check.property_test.resources import Qubit, QubitRange, ConcreteQubit
-from qiskit_check.property_test.test_results import MeasurementResult
 
 
 class AbstractDeutschJozsaPropertyTest(ExampleTestBase, ABC):
@@ -19,9 +18,9 @@ class AbstractDeutschJozsaPropertyTest(ExampleTestBase, ABC):
     def get_qubits(self) -> Collection[Qubit]:
         return [Qubit(QubitRange(0, 0, 0, 0)) for _ in range(4)]
 
-    def evaluate_correctness(self, measurement: MeasurementResult, resource_matcher: Dict[Qubit, ConcreteQubit]) -> int:
-        counts = measurement.get_counts()
-        measurement = list(counts.keys())[0]
+    def evaluate_correctness(self, measurement: List[Dict[str, int]], resource_matcher: Dict[Qubit, ConcreteQubit]) -> float:
+        counts = measurement[0]
+        measurement = list(counts.keys())[0][:-1]
         if len(counts.keys()) > 1:
             return 0
         if self.balanced_or_constant == 1:
@@ -30,7 +29,7 @@ class AbstractDeutschJozsaPropertyTest(ExampleTestBase, ABC):
             return measurement == "0"*(len(self.qubits)-1)
 
     def assertions(self, qubits: Sequence[Qubit]) -> AbstractAssertion:
-        return AssertTrue(self.evaluate_correctness, 1)
+        return AssertTrue(qubits[:-1], self.evaluate_correctness, 1)
 
 
 class DeutschJozsaPropertyTest(AbstractDeutschJozsaPropertyTest):

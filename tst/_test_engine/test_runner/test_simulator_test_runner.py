@@ -8,10 +8,9 @@ from qiskit_check._test_engine.assessor import AssessorFactory
 from qiskit_check._test_engine.concrete_property_test import ConcretePropertyTest
 from qiskit_check._test_engine.generator import HaarInputGeneratorFactory, NaiveInputGeneratorFactory, \
     QubitInputGeneratorFactory
-from qiskit_check._test_engine.state_estimation.tomography import DirectInversionTomography
 from qiskit_check._test_engine.test_runner import SimulatorTestRunner
 from qiskit_check.property_test import PropertyTest
-from qiskit_check.property_test.assertions import AbstractAssertion, AssertTransformed, AssertStateTransformed
+from qiskit_check.property_test.assertions import AbstractAssertion, AssertTransformedByProbability, AssertTransformedByState
 from qiskit_check.property_test.resources import Qubit, AnyRange
 
 
@@ -25,7 +24,7 @@ class ExamplePropertyTest(PropertyTest):
         return [Qubit(AnyRange())]
 
     def assertions(self, qubits: Sequence[Qubit]) -> Union[AbstractAssertion, Sequence[AbstractAssertion]]:
-        return [AssertTransformed(self.qubits[0], Rotation.identity())]
+        return [AssertTransformedByProbability(self.qubits[0], Rotation.identity())]
 
     @staticmethod
     def confidence_level() -> float:
@@ -46,7 +45,7 @@ class ExamplePropertyTest(PropertyTest):
 
 class Example1PropertyTest(ExamplePropertyTest):
     def assertions(self, qubits: Sequence[Qubit]) -> Union[AbstractAssertion, Sequence[AbstractAssertion]]:
-        return [AssertStateTransformed(self.qubits[0], 0, Rotation.identity())]
+        return [AssertTransformedByState(self.qubits[0], 0, Rotation.identity())]
 
 
 class Example2PropertyTest(ExamplePropertyTest):
@@ -69,7 +68,7 @@ class ExampleFailPropertyTest(ExamplePropertyTest):
 
 class TestSimulatorTestRunner:
     def test_run_tests_runs_all_tests_when_everything_correct(self, mocker: MockFixture):
-        test_runner = SimulatorTestRunner("aer_simulator", mocker.MagicMock(), DirectInversionTomography())
+        test_runner = SimulatorTestRunner("aer_simulator", mocker.MagicMock())
         assessor_factory = AssessorFactory()
         haar_factory = HaarInputGeneratorFactory()
         naive_factory = NaiveInputGeneratorFactory()
