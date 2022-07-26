@@ -46,12 +46,12 @@ class Assessor:
 
         """
         for assertion in self.assertions:
-            assertion_input = TestResult(self.get_result(results, assertion), self.get_counts(results, assertion))
-            p_value = assertion.compute_p_value(assertion_input, self.resource_matcher, num_measurements, num_experiments)
+            assertion_input = TestResult(self._get_result(results, assertion), self._get_counts(results, assertion))
+            p_value = assertion.get_p_value(assertion_input, self.resource_matcher, num_measurements, num_experiments)
             confidence_level = corrector.get_corrected_confidence_level()
             assertion.verify(confidence_level, p_value)
     
-    def get_counts(self, experiment_results: List[Dict[str, Tuple[Result, QuantumCircuit]]], assertion: AbstractAssertion) -> List[List[Dict[str, int]]]:
+    def _get_counts(self, experiment_results: List[Dict[str, Tuple[Result, QuantumCircuit]]], assertion: AbstractAssertion) -> List[List[Dict[str, int]]]:
         measurement_names = self.get_measurement_names(assertion)
 
         # TODO: this can be optimized
@@ -67,7 +67,7 @@ class Assessor:
         return results_per_instruction
 
     
-    def get_result(self, experiment_results: List[Dict[str, Tuple[Result, QuantumCircuit]]], assertion: AbstractAssertion) -> Dict[Qubit, List[List[float]]]:
+    def _get_result(self, experiment_results: List[Dict[str, Tuple[Result, QuantumCircuit]]], assertion: AbstractAssertion) -> Dict[Qubit, List[List[float]]]:
         measurement_names = self.get_measurement_names(assertion)
         # TODO: this can be optimized
         parsed_result = {}

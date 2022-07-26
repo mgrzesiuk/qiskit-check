@@ -17,10 +17,6 @@ class AbstractAssertion(ABC):
         self.combiner = combiner
         self.name = str(uuid4())
 
-    def compute_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
-        self.check_if_experiments_empty(experiments)
-        return self.get_p_value(experiments, resource_matcher, num_measurements, num_experiments)
-
     @abstractmethod
     def get_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
         pass
@@ -60,8 +56,3 @@ class AbstractAssertion(ABC):
             is_valid = is_valid or AbstractAssertion.is_measurement_valid(instruction)
         
         return is_valid
-
-    @staticmethod
-    def check_if_experiments_empty(experiments: TestResult) -> None:
-        if len(experiments.individual_measurements) ==  0:
-            raise NoExperimentsError("the assertion received no qiskit results")
