@@ -3,7 +3,7 @@ from math import acos, cos
 
 from scipy.spatial.transform import Rotation
 from qiskit.circuit import Instruction, Measure
-from qiskit_check.property_test.test_results import test_result
+from qiskit_check.property_test.test_results import TestResult
 
 from qiskit_check.property_test.assertions import AbstractAssertion, AssertProbability
 from qiskit_check.property_test.resources.test_resource import Qubit, ConcreteQubit
@@ -30,7 +30,7 @@ class AssertTransformedByProbability(AbstractAssertion):
         return probabilities_for_measurement
 
 
-    def get_p_value(self, experiments: test_result, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
+    def get_p_value(self, experiments: TestResult, resource_matcher: Dict[Qubit, ConcreteQubit], num_measurements: int, num_experiments: int) -> float:
         qubit_initial_value = resource_matcher[self.qubit].value.data
         theta, phi = vector_state_to_hopf_coordinates(qubit_initial_value[0], qubit_initial_value[1])
         bloch_vector = hopf_coordinates_to_bloch_vector(theta, phi)

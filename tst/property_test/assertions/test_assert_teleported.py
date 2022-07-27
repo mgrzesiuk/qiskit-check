@@ -13,7 +13,7 @@ class TestAssertTeleported:
 
         assert_teleported = AssertTeleportedByProbability(q0, q1)
         
-        assert assert_teleported.combiner([[{"0": 90, "1": 10}]*20]) == [[90]*20]
+        assert assert_teleported.combiner([[{"0": 90, "1": 10}]*20]) == [[0.9]*20]
     
     def test_get_p_value_returns_0_when_not_teleported(self):
         q0 = Qubit(AnyRange())

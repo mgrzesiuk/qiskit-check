@@ -20,6 +20,7 @@ class AssertTrue(AbstractAssertion):
         super().__init__(measurements, location, lambda x: [[]])
         self.verify_function = verify_function
         self.target_value = target_value
+        # since the test engine requires qubits to be specified as fields in the assertion class we add all qubits as attributes (so that we get their measurements)
         for qubit in qubits:
             self.__setattr__(f"_qubit_{qubit.name.replace('-', '_')}", qubit)
 

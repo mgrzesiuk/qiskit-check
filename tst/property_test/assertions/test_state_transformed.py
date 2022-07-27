@@ -1,49 +1,44 @@
 from math import pi
 
 import pytest
-from pytest_mock import MockFixture
 from qiskit.quantum_info import Statevector
 from scipy.spatial.transform import Rotation
 
 from qiskit_check.property_test.assertions import AssertTransformedByState
 from qiskit_check.property_test.resources import AnyRange, Qubit, ConcreteQubit
+from qiskit_check.property_test.test_results.test_result import TestResult
 
 
 class TestStateTransformed:
-    def test_check_if_experiments_empty_throws_no_tomography_error_when_no_experiments(self):
+    def test_combiner_returns_correct_value_when_input_ok(self):
         q0 = Qubit(AnyRange())
-        test_results = TestResult([], 1000, None)
+        assert_equal = AssertTransformedByState(q0, Rotation.from_euler("X", [pi]))
+        
+        assert [[0.5]*7, [0]*7, [-8/10]*7] == assert_equal.combiner([[{"0": 15, "1": 5}]*7, [{"0": 5, "1": 5}]*7, [{"0": 1, "1": 9}]*7])
+
+    def test_get_p_value_returns_1_if_transformed(self):
+        q0 = Qubit(AnyRange())
+        num_measurements = 590
+        num_experiments = 512
+        test_results = TestResult({q0: [[0]*num_experiments, [0]*num_experiments, [-1]*num_experiments]}, [[{}]])
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_transformed = AssertTransformedByState(q0, 0, Rotation.identity())
+        assert_transformed = AssertTransformedByState(q0, Rotation.from_euler("X", [pi]), location=3)
 
-        with pytest.raises(NoTomographyError):
-            assert_transformed.get_p_value(test_results, resource_matcher)
+        assert 1 == assert_transformed.get_p_value(test_results, resource_matcher, num_measurements, num_experiments)
 
-    def test_get_p_value_returns_1_if_transformed(self, mocker: MockFixture):
+    def test_get_p_value_returns_0_if_not_transformed(self):
         q0 = Qubit(AnyRange())
-        tomography_result = mocker.patch.object(TomographyResult, "get_estimates")
-        tomography_result.get_estimates.return_value = [(0, 0, -1) for _ in range(1000)]
-        test_results = TestResult([], 1000, tomography_result)
+        num_measurements = 590
+        num_experiments = 512
+        test_results = TestResult({q0: [[0]*num_experiments, [0]*num_experiments, [-1]*num_experiments]}, [[{}]])
         resource_matcher = {
             q0: ConcreteQubit(0, Statevector([1, 0])),
         }
-        assert_transformed = AssertTransformedByState(q0, 0, Rotation.from_euler("X", [pi]))
+        assert_transformed = AssertTransformedByState(q0, Rotation.identity())
 
-        assert 1 == assert_transformed.get_p_value(test_results, resource_matcher)
-
-    def test_get_p_value_returns_0_if_not_transformed(self, mocker: MockFixture):
-        q0 = Qubit(AnyRange())
-        tomography_result = mocker.patch.object(TomographyResult, "get_estimates")
-        tomography_result.get_estimates.return_value = [(0, 0, -1) for _ in range(1000)]
-        test_results = TestResult([], 1000, tomography_result)
-        resource_matcher = {
-            q0: ConcreteQubit(0, Statevector([1, 0])),
-        }
-        assert_transformed = AssertTransformedByState(q0, 0, Rotation.identity())
-
-        assert 0 == assert_transformed.get_p_value(test_results, resource_matcher)
+        assert 0 == assert_transformed.get_p_value(test_results, resource_matcher, num_measurements, num_experiments)
 
     def test_verify_throws_assertion_error_when_not_equal(self):
         q0 = Qubit(AnyRange())
