@@ -28,3 +28,7 @@ class IncorrectQubitStateError(IncorrectPropertyTestError):
 
 class NoExperimentsError(IncorrectPropertyTestError):
     pass
+
+
+class InitialStateGenerationError(Exception):
+    pass

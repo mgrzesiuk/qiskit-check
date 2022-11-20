@@ -4,7 +4,7 @@ from math import cos as fcos
 from math import sin as fsin
 from typing import Tuple
 
-from qiskit import QuantumCircuit, QuantumRegister
+from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit as QiskitQubit
 
 
@@ -63,8 +63,17 @@ def hopf_coordinates_to_bloch_vector(theta: float, phi: float) -> Tuple[float, f
 def round_floats(num):
     return round(num, 10)
 
-
 def get_global_instruction_location(circuit: QuantumCircuit, target_qubit_index: int, qubit_specific_location: int) -> int:
+    """helper method for getting the location of a circuit based on location (number of preceding gates) for specific qubit
+
+    Args:
+        circuit (QuantumCircuit): circuit for which to compute the location
+        target_qubit_index (int): index of qubit for which to compute the location
+        qubit_specific_location (int): number of desired preceding gates for that qubit (after which to insert the measurement)
+
+    Returns:
+        int: global location for a circuit that can be provided to the assertion
+    """
     global_index = 0
     qubit_specific_index = 0
     for _, qargs, _ in circuit.data:
@@ -72,7 +81,7 @@ def get_global_instruction_location(circuit: QuantumCircuit, target_qubit_index:
             break
         
         for qubit in qargs:
-            if (get_index_of_qubit(circuit, qubit) == target_qubit_index):
+            if (_get_index_of_qubit(circuit, qubit) == target_qubit_index):
                 qubit_specific_index += 1
         
         global_index += 1
@@ -84,7 +93,7 @@ class QubitNotFoundError(Exception):
     pass
 
 
-def get_index_of_qubit(circuit: QuantumCircuit, qubit: QiskitQubit) -> int:
+def _get_index_of_qubit(circuit: QuantumCircuit, qubit: QiskitQubit) -> int:
     index = 0
     for qreg in circuit.qregs:
         if qubit in qreg:

@@ -1,12 +1,12 @@
 test_runner:
-  class: "qiskit_check._test_engine.test_runner.SimulatorTestRunner"
+  class: "qiskit_check.test_engine.test_runner.SimulatorTestRunner"
   args:
     simulator_name: "aer_simulator"
     printer:
-      class: "qiskit_check._test_engine.printers.TerminalPrinter"
+      class: "qiskit_check.test_engine.printers.TerminalPrinter"
     tomography:
-      class: "qiskit_check._test_engine.state_estimation.tomography.direct_inversion_tomography.DirectInversionTomography"
+      class: "qiskit_check.test_engine.state_estimation.tomography.direct_inversion_tomography.DirectInversionTomography"
     corrector_factory:
-      class: "qiskit_check._test_engine.p_value_correction.bonferroni_correction.BonferroniCorrectionFactory"
+      class: "qiskit_check.test_engine.p_value_correction.bonferroni_correction.BonferroniCorrectionFactory"
 input_generator_factory:
-  class: "qiskit_check._test_engine.generator.HaarInputGeneratorFactory"
+  class: "qiskit_check.test_engine.generator.HaarInputGeneratorFactory"
